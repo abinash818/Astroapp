@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const jyotish = require('jyotish-calc');
-const swisseph = require('swisseph-v2');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -10,7 +9,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
-// Helper to convert longitude to [signIndex, degree]
 const getSignDegree = (long) => {
     const sign = Math.floor(long / 30);
     const deg = long % 30;
@@ -20,9 +18,8 @@ const getSignDegree = (long) => {
 app.post('/calculate', (req, res) => {
     try {
         const body = { ...req.body };
-        const ayanamsha = parseInt(body.ayanamsha) || 1; // Default Lahiri
+        const ayanamsha = parseInt(body.ayanamsha) || 1;
 
-        // Parse inputs
         const lat = parseFloat(body.lat);
         const lng = parseFloat(body.lng);
         const timezone = parseFloat(body.timezone);
@@ -35,14 +32,9 @@ app.post('/calculate', (req, res) => {
             birthData = { ...birthData, year: y, month: m, date: d, hour: h, min, sec: s };
         }
 
-        // 1. Get Graha Positions with selected Ayanamsha
-        // (The getGrahasPosition internally calls swe_set_sid_mode)
         const grahas = jyotish.grahas.getGrahasPosition(birthData, { ayanamsha });
-
-        // 2. Panchanga
         const panchanga = jyotish.panchanga.calculatePanchanga(birthData);
 
-        // 3. Ashtakavarga
         const avPositions = {
             Sun: grahas.Su.longitude,
             Moon: grahas.Mo.longitude,
@@ -51,13 +43,23 @@ app.post('/calculate', (req, res) => {
             Jupiter: grahas.Ju.longitude,
             Venus: grahas.Ve.longitude,
             Saturn: grahas.Sa.longitude,
-            Ascendant: grahas.La.longitude
+            Ascendant: grahas.La.longitude,
+            Rahu: grahas.Ra.longitude,
+            Ketu: grahas.Ke.longitude
         };
-        const ashtakavarga = jyotish.ashtakavarga.calculateAshtakavarga(avPositions);
 
-        // 4. Dosha Analysis
-        // Format: [[planetIndex, [sign, degree]], ...]
-        // 0:Sun, 1:Moon, 2:Mars, 3:Mercury, 4:Jupiter, 5:Venus, 6:Saturn, 7:Rahu, 8:Ketu, L/9:Lagna
+        // 1. All 21 Divisional Charts
+        const allVargas = {};
+        const vargaList = ['D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7', 'D8', 'D9', 'D10', 'D11', 'D12', 'D16', 'D20', 'D24', 'D27', 'D30', 'D32', 'D40', 'D45', 'D60'];
+        vargaList.forEach(v => {
+            allVargas[v] = jyotish.vargas.calculateVargaChart(avPositions, v);
+        });
+
+        // 2. Multi-level Dasha (Maha, Antar, Pratyantar, Sukshma)
+        const birthDateObj = new Date(birthData.year, birthData.month - 1, birthData.date, birthData.hour, birthData.min);
+        const dashaTree = jyotish.dashas.vimshottari.generateDashaTree(birthDateObj, grahas.Mo.longitude, 4);
+
+        // 3. Dosha and Yoga
         const doshaPositions = [
             [0, getSignDegree(grahas.Su.longitude)],
             [1, getSignDegree(grahas.Mo.longitude)],
@@ -71,17 +73,9 @@ app.post('/calculate', (req, res) => {
             ['L', getSignDegree(grahas.La.longitude)]
         ];
         const doshas = jyotish.doshas.getDoshaDetails(doshaPositions, grahas.Mo.longitude);
-
-        // 5. Yogas & Raja Yogas
         const yogas = jyotish.yogas.getYogaDetails(doshaPositions);
-        const rajayogas = jyotish.rajayogas.getRajaYogaDetails(doshaPositions);
 
-        // 6. Dashas (Vimshottari)
-        const birthDateObj = new Date(birthData.year, birthData.month - 1, birthData.date, birthData.hour, birthData.min);
-        const vdashas = jyotish.dashas.vimshottari.calculateMahadashas(birthDateObj, grahas.Mo.longitude);
-
-        // 7. Shadbala
-        // Required format: [[sign, degree], ...] for Sun to Saturn
+        // 4. Shadbala
         const shadbalaPositions = [
             getSignDegree(grahas.Su.longitude),
             getSignDegree(grahas.Mo.longitude),
@@ -91,35 +85,23 @@ app.post('/calculate', (req, res) => {
             getSignDegree(grahas.Ve.longitude),
             getSignDegree(grahas.Sa.longitude)
         ];
-        const julianDay = panchanga.julianDay;
-        const shadbala = jyotish.strengths.calculateShadbala(shadbalaPositions, Math.floor(grahas.La.longitude / 30), julianDay, lat, lng);
-
-        // 8. Vargas (D9 example)
-        const d9Chart = jyotish.vargas.calculateVargaChart(avPositions, 'D9');
+        const shadbala = jyotish.strengths.calculateShadbala(shadbalaPositions, Math.floor(grahas.La.longitude / 30), panchanga.julianDay, lat, lng);
 
         res.json({
             success: true,
             data: {
                 grahas,
                 panchanga,
-                ashtakavarga: {
-                    sav: ashtakavarga.sav,
-                    interpretations: ashtakavarga.interpretations
-                },
+                vargas: allVargas,
+                dashaTree,
                 doshas,
                 yogas: yogas.summary.present,
-                rajayogas: rajayogas.summary,
-                dashas: vdashas,
-                shadbala: shadbala,
-                vargas: { d9: d9Chart }
+                shadbala
             }
         });
     } catch (error) {
         console.error("Calculation Error:", error);
-        res.status(400).json({
-            success: false,
-            error: error.message
-        });
+        res.status(400).json({ success: false, error: error.message });
     }
 });
 

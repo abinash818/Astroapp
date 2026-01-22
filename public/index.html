@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vedic Astrology Pro</title>
+    <title>Vedic Astro Ultimate</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -12,7 +12,7 @@
             --secondary: #a855f7;
             --accent: #f59e0b;
             --bg: #0b0f19;
-            --card-bg: rgba(17, 24, 39, 0.8);
+            --card-bg: rgba(17, 24, 39, 0.9);
             --text: #f3f4f6;
             --border: rgba(255, 255, 255, 0.1);
         }
@@ -25,203 +25,240 @@
         }
 
         body {
-            background: radial-gradient(circle at top right, #1e1b4b, #0b0f19);
+            background: #0b0f19;
             color: var(--text);
-            min-height: 100vh;
             padding: 20px;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
+        /* Header & Form */
         header {
             text-align: center;
-            margin-bottom: 40px;
-        }
-
-        h1 {
-            font-size: 3rem;
-            background: linear-gradient(135deg, #a5b4fc, #e879f9);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
+            margin-bottom: 30px;
         }
 
         .input-panel {
             background: var(--card-bg);
-            backdrop-filter: blur(10px);
             border: 1px solid var(--border);
             border-radius: 20px;
-            padding: 30px;
+            padding: 25px;
             margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
         .form-grid {
             display: grid;
-            border-radius: 12px;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
         }
 
         .input-group {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 5px;
         }
 
         label {
             color: #9ca3af;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
 
         input,
         select {
-            background: rgba(0, 0, 0, 0.3);
+            background: #000;
             border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 10px 15px;
-            color: white;
-            font-size: 0.95rem;
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: #fff;
         }
 
         button {
             grid-column: 1 / -1;
-            background: linear-gradient(to right, var(--primary), var(--secondary));
+            background: var(--primary);
             border: none;
-            padding: 15px;
-            border-radius: 12px;
-            color: white;
+            padding: 12px;
+            border-radius: 10px;
+            color: #fff;
             font-weight: 600;
-            font-size: 1.1rem;
             cursor: pointer;
-            margin-top: 10px;
-            transition: 0.3s;
         }
 
-        button:hover {
-            transform: scale(1.01);
-            filter: brightness(1.1);
-        }
-
-        /* Output Styling */
+        /* Tabs */
         .tabs {
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
             overflow-x: auto;
-            padding-bottom: 5px;
         }
 
         .tab-btn {
-            background: rgba(255, 255, 255, 0.05);
+            background: #1e293b;
             border: 1px solid var(--border);
-            padding: 10px 20px;
-            border-radius: 30px;
+            padding: 8px 16px;
+            border-radius: 20px;
             color: #9ca3af;
             cursor: pointer;
-            white-space: nowrap;
-            transition: 0.2s;
+            transition: 0.3s;
         }
 
         .tab-btn.active {
             background: var(--primary);
-            color: white;
+            color: #fff;
             border-color: var(--primary);
         }
 
         .tab-content {
             display: none;
-            animation: slideUp 0.4s ease;
         }
 
         .tab-content.active {
             display: block;
         }
 
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        /* South Indian Chart */
+        .chart-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
         }
 
-        .output-grid {
+        .si-chart {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            width: 500px;
+            height: 500px;
+            border: 2px solid var(--primary);
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .si-cell {
+            border: 1px solid var(--border);
+            padding: 5px;
+            display: flex;
+            flex-direction: column;
+            font-size: 0.75rem;
+            position: relative;
+        }
+
+        .si-cell .sign-name {
+            color: #4b5563;
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            font-size: 0.6rem;
+        }
+
+        .si-cell .planet-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .si-cell .planet-item {
+            background: rgba(99, 102, 241, 0.2);
+            border-radius: 4px;
+            padding: 1px 4px;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .si-cell .asc-item {
+            color: var(--accent) !important;
+            font-weight: bold;
+            border: 1px solid var(--accent);
+        }
+
+        .si-center {
+            grid-column: 2 / 4;
+            grid-row: 2 / 4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Data Layouts */
+        .grid-layout {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
+            gap: 20px;
         }
 
         .card {
             background: var(--card-bg);
             border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 25px;
+            border-radius: 12px;
+            padding: 20px;
         }
 
         .card h3 {
             color: var(--accent);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             border-bottom: 1px solid var(--border);
-            padding-bottom: 10px;
+            padding-bottom: 5px;
         }
 
-        .data-list {
-            list-style: none;
-        }
-
-        .data-item {
+        .data-row {
             display: flex;
             justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-        }
-
-        .val {
-            font-weight: 600;
-            color: #fff;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
         }
 
         .lbl {
             color: #9ca3af;
+            font-size: 0.9rem;
         }
 
-        .dosha-tag {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            margin: 4px;
+        .val {
+            font-weight: 600;
         }
 
-        .dosha-bad {
-            background: rgba(239, 68, 68, 0.2);
-            color: #fca5a5;
-            border: 1px solid rgba(239, 68, 68, 0.3);
+        /* Dasha Tree */
+        .dasha-tree {
+            font-size: 0.85rem;
+            max-height: 500px;
+            overflow-y: auto;
         }
 
-        .dosha-good {
-            background: rgba(34, 197, 94, 0.2);
-            color: #86efac;
-            border: 1px solid rgba(34, 197, 94, 0.3);
+        .dasha-maha {
+            border-left: 2px solid var(--primary);
+            padding-left: 10px;
+            margin-bottom: 10px;
+        }
+
+        .dasha-andar {
+            margin-left: 15px;
+            border-left: 1px dotted #4b5563;
+            padding-left: 10px;
+            color: #9ca3af;
+        }
+
+        .dasha-header {
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+        }
+
+        .dasha-header:hover {
+            color: #fff;
         }
 
         .loader {
             display: none;
             text-align: center;
-            font-size: 1.2rem;
             color: var(--primary);
-            margin: 40px;
+            margin: 20px;
         }
     </style>
 </head>
@@ -230,118 +267,105 @@
 
     <div class="container">
         <header>
-            <h1>Astro Pro Calculator</h1>
-            <p>Comprehensive Vedic Astrology Analysis</p>
+            <h1>Astro Ultimate</h1>
+            <p>Full Vedic Engine</p>
         </header>
 
         <div class="input-panel">
             <div class="form-grid">
-                <div class="input-group">
-                    <label>Date of Birth</label>
-                    <input type="date" id="dob" value="1990-01-01">
+                <div class="input-group"><label>DOB</label><input type="date" id="dob" value="1990-01-01"></div>
+                <div class="input-group"><label>Time</label><input type="time" id="tob" step="1" value="12:00:00"></div>
+                <div class="input-group"><label>Lat</label><input type="number" id="lat" value="28.6139" step="any">
+                </div>
+                <div class="input-group"><label>Lng</label><input type="number" id="lng" value="77.2090" step="any">
+                </div>
+                <div class="input-group"><label>TZ</label><input type="number" id="timezone" value="5.5" step="0.5">
                 </div>
                 <div class="input-group">
-                    <label>Time (HH:MM:SS)</label>
-                    <input type="time" id="tob" step="1" value="12:00:00">
-                </div>
-                <div class="input-group">
-                    <label>Latitude</label>
-                    <input type="number" id="lat" value="28.6139" step="any">
-                </div>
-                <div class="input-group">
-                    <label>Longitude</label>
-                    <input type="number" id="lng" value="77.2090" step="any">
-                </div>
-                <div class="input-group">
-                    <label>Timezone</label>
-                    <input type="number" id="timezone" value="5.5" step="0.5">
-                </div>
-                <div class="input-group">
-                    <label>Ayanamsha (Lahiri/Raman...)</label>
+                    <label>Ayanamsha</label>
                     <select id="ayanamsha">
-                        <option value="1">Lahiri (Chitra Paksha)</option>
+                        <option value="1">Lahiri</option>
                         <option value="3">Raman</option>
-                        <option value="5">Krishnamurti (KP)</option>
-                        <option value="0">Fagan/Bradley</option>
-                        <option value="21">True Chitra / Spica</option>
+                        <option value="5">KP</option>
                     </select>
                 </div>
-                <button onclick="calculate()">Generate Full Report</button>
+                <button onclick="calculate()">Generate Cosmic Report</button>
             </div>
         </div>
 
-        <div class="loader" id="loader">Consulting the orbits... 🪐</div>
+        <div id="loader" class="loader">Aligning planets... 🔭</div>
 
-        <div id="results-display" style="display:none">
+        <div id="results" style="display:none">
             <div class="tabs">
-                <div class="tab-btn active" onclick="switchTab(event, 'panchanga')">Panchanga</div>
-                <div class="tab-btn" onclick="switchTab(event, 'planets')">Planets & Vargas</div>
-                <div class="tab-btn" onclick="switchTab(event, 'doshas')">Doshas & Yogas</div>
-                <div class="tab-btn" onclick="switchTab(event, 'dasha')">Dasha (Vimshottari)</div>
-                <div class="tab-btn" onclick="switchTab(event, 'av-strength')">Strength & AV</div>
+                <button class="tab-btn active" onclick="tab(event, 't-charts')">Charts</button>
+                <button class="tab-btn" onclick="tab(event, 't-panchanga')">Panchanga</button>
+                <button class="tab-btn" onclick="tab(event, 't-dasha')">Dasha (Sukshma)</button>
+                <button class="tab-btn" onclick="tab(event, 't-more')">Strength & Yogas</button>
+            </div>
+
+            <!-- Charts Tab -->
+            <div id="t-charts" class="tab-content active">
+                <div class="chart-container">
+                    <div class="input-group" style="width: 250px;">
+                        <label>Division (Varga)</label>
+                        <select id="varga-select" onchange="drawChart()">
+                            <option value="D1">D1 - Rashi</option>
+                            <option value="D2">D2 - Hora</option>
+                            <option value="D3">D3 - Drekkana</option>
+                            <option value="D4">D4 - Chaturthamsha</option>
+                            <option value="D7">D7 - Saptamsha</option>
+                            <option value="D9" selected>D9 - Navamsha</option>
+                            <option value="D10">D10 - Dashamsha</option>
+                            <option value="D12">D12 - Dwadashamsha</option>
+                            <option value="D60">D60 - Shashtyamsha</option>
+                        </select>
+                    </div>
+                    <div class="si-chart" id="si-chart">
+                        <!-- South Indian Chart JS Generated -->
+                    </div>
+                </div>
             </div>
 
             <!-- Panchanga Tab -->
-            <div id="panchanga" class="tab-content active">
-                <div class="output-grid">
+            <div id="t-panchanga" class="tab-content">
+                <div class="grid-layout">
                     <div class="card">
-                        <h3>Panchangam Elements</h3>
-                        <div class="data-list" id="panch-list"></div>
+                        <h3>5 Elements (Panchangam)</h3>
+                        <div id="p-core"></div>
                     </div>
                     <div class="card">
-                        <h3>Sun & Moon Cycle</h3>
-                        <div class="data-list" id="sunmoon-list"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Planets Tab -->
-            <div id="planets" class="tab-content">
-                <div class="output-grid">
-                    <div class="card">
-                        <h3>Main Planets (D1)</h3>
-                        <div class="data-list" id="planets-list"></div>
+                        <h3>Muhurtas</h3>
+                        <div id="p-muhurta"></div>
                     </div>
                     <div class="card">
-                        <h3>Navamsha (D9)</h3>
-                        <div class="data-list" id="varga-list"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Doshas Tab -->
-            <div id="doshas" class="tab-content">
-                <div class="output-grid">
-                    <div class="card">
-                        <h3>Major Doshas</h3>
-                        <div id="dosha-list" style="display: flex; flex-wrap: wrap;"></div>
-                    </div>
-                    <div class="card">
-                        <h3>Auspicious Yogas</h3>
-                        <div id="yoga-list" style="display: flex; flex-wrap: wrap;"></div>
+                        <h3>Solar/Lunar Details</h3>
+                        <div id="p-solar"></div>
                     </div>
                 </div>
             </div>
 
             <!-- Dasha Tab -->
-            <div id="dasha" class="tab-content">
-                <div class="card" style="max-width: 600px; margin: 0 auto;">
-                    <h3>Vimshottari Mahadashas</h3>
-                    <div class="data-list" id="dasha-list"></div>
+            <div id="t-dasha" class="tab-content">
+                <div class="card">
+                    <h3>Vimshottari Dasha Tree (Maha → Antar → Pratyantar → Sukshma)</h3>
+                    <div id="d-tree" class="dasha-tree"></div>
                 </div>
             </div>
 
-            <!-- Strength Tab -->
-            <div id="av-strength" class="tab-content">
-                <div class="output-grid">
+            <!-- More Tab -->
+            <div id="t-more" class="tab-content">
+                <div class="grid-layout">
                     <div class="card">
-                        <h3>Shadbala (Planetary Strength)</h3>
-                        <div class="data-list" id="shadbala-list"></div>
+                        <h3>Doshas</h3>
+                        <div id="m-doshas"></div>
                     </div>
                     <div class="card">
-                        <h3>SAV (Bindus per House)</h3>
-                        <div id="sav-chart" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
-                        </div>
+                        <h3>Yogas</h3>
+                        <div id="m-yogas"></div>
+                    </div>
+                    <div class="card">
+                        <h3>Shadbala</h3>
+                        <div id="m-shadbala"></div>
                     </div>
                 </div>
             </div>
@@ -349,19 +373,26 @@
     </div>
 
     <script>
-        function switchTab(e, tabId) {
+        let globalData = null;
+        const SIGN_INDEX_MAP = [
+            [0, 0, 11], [1, 0, 0], [2, 0, 1], [3, 0, 2], // Pisces, Aries, Taurus, Gemini
+            [0, 1, 10], [3, 1, 3],         // Aquarius, Cancer
+            [0, 2, 9], [3, 2, 4],         // Capricorn, Leo
+            [0, 3, 8], [1, 3, 7], [2, 3, 6], [3, 3, 5] // Sagit, Scorpio, Libra, Virgo
+        ];
+        const SIGN_NAMES = ["Ar", "Ta", "Ge", "Cn", "Le", "Vi", "Li", "Sc", "Sg", "Cp", "Aq", "Pi"];
+
+        function tab(e, id) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            e.currentTarget.classList.add('active');
-            document.getElementById(tabId).classList.add('active');
+            e.target.classList.add('active');
+            document.getElementById(id).classList.add('active');
         }
 
         async function calculate() {
             const loader = document.getElementById('loader');
-            const results = document.getElementById('results-display');
-
-            loader.style.display = 'block';
-            results.style.display = 'none';
+            const results = document.getElementById('results');
+            loader.style.display = 'block'; results.style.display = 'none';
 
             const payload = {
                 dateString: document.getElementById('dob').value,
@@ -372,102 +403,120 @@
                 ayanamsha: document.getElementById('ayanamsha').value
             };
 
-            try {
-                const res = await fetch('/calculate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const { success, data } = await res.json();
+            const res = await fetch('/calculate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            const { data } = await res.json();
+            globalData = data;
 
-                if (!success) throw new Error("Calculation failed");
-
-                renderData(data);
-
-                loader.style.display = 'none';
-                results.style.display = 'block';
-            } catch (e) {
-                alert(e.message);
-                loader.style.display = 'none';
-            }
+            renderAll();
+            loader.style.display = 'none'; results.style.display = 'block';
         }
 
-        function renderData(data) {
-            // Panchanga
-            const p = data.panchanga;
-            document.getElementById('panch-list').innerHTML = `
-            ${renderItem('Vaara', p.vaara.name)}
-            ${renderItem('Tithi', `${p.tithi.name} (${p.tithi.paksha})`)}
-            ${renderItem('Nakshatra', `${p.nakshatra.name} (Pad ${p.nakshatra.pada})`)}
-            ${renderItem('Yoga', p.yoga.name)}
-            ${renderItem('Karana', p.karana.name)}
-        `;
-            document.getElementById('sunmoon-list').innerHTML = `
-            ${renderItem('Sunrise', p.sunrise.string)}
-            ${renderItem('Sunset', p.sunset.string)}
-            ${renderItem('Moonrise', p.moonrise.string)}
-            ${renderItem('Lunar Month', p.lunarMonth.name)}
-        `;
+        function renderAll() {
+            drawChart();
+            renderPanchanga();
+            renderDasha();
+            renderMore();
+        }
 
-            // Planets
-            let pList = '';
-            Object.entries(data.grahas).forEach(([k, v]) => {
-                if (v.longitude !== undefined) {
-                    pList += renderItem(k, `${v.longitude.toFixed(2)}° | ${v.rashi}`);
+        function drawChart() {
+            const varga = document.getElementById('varga-select').value;
+            const chartData = globalData.vargas[varga];
+            const container = document.getElementById('si-chart');
+            container.innerHTML = '<div class="si-center">' + varga + '</div>';
+
+            // Pre-fill cells
+            const cells = {};
+            SIGN_INDEX_MAP.forEach(([x, y, signId]) => {
+                const div = document.createElement('div');
+                div.className = 'si-cell';
+                div.style.gridColumn = x + 1;
+                div.style.gridRow = y + 1;
+                div.innerHTML = `<span class="sign-name">${SIGN_NAMES[signId]}</span><div class="planet-list" id="cell-${signId}"></div>`;
+                container.appendChild(div);
+                cells[signId] = div.querySelector('.planet-list');
+            });
+
+            Object.entries(chartData).forEach(([pName, pData]) => {
+                const signId = SIGN_NAMES.indexOf(pData.sign.substring(0, 2));
+                if (cells[signId]) {
+                    const span = document.createElement('span');
+                    span.className = 'planet-item' + (pName === 'Ascendant' ? ' asc-item' : '');
+                    span.textContent = pName === 'Ascendant' ? 'La' : pName.substring(0, 2);
+                    cells[signId].appendChild(span);
                 }
             });
-            document.getElementById('planets-list').innerHTML = pList;
-
-            // D9 Varga
-            let vList = '';
-            Object.entries(data.vargas.d9).forEach(([k, v]) => {
-                vList += renderItem(k, v.sign);
-            });
-            document.getElementById('varga-list').innerHTML = vList;
-
-            // Doshas
-            let dList = '';
-            Object.entries(data.doshas).forEach(([k, v]) => {
-                const cls = v.hasDosha ? 'dosha-bad' : 'dosha-good';
-                dList += `<span class="dosha-tag ${cls}">${k.toUpperCase()}: ${v.message}</span>`;
-            });
-            document.getElementById('dosha-list').innerHTML = dList;
-
-            // Yogas
-            let yList = '';
-            data.yogas.forEach(y => {
-                yList += `<span class="dosha-tag dosha-good">${y.toUpperCase()}</span>`;
-            });
-            document.getElementById('yoga-list').innerHTML = yList || 'None detected';
-
-            // Dashas
-            let dashaInfo = '';
-            data.dashas.forEach(d => {
-                dashaInfo += renderItem(d.lord, new Date(d.end).toLocaleDateString());
-            });
-            document.getElementById('dasha-list').innerHTML = dashaInfo;
-
-            // Strength (Shadbala)
-            let sList = '';
-            ['Sun', 'Moon', 'Mars', 'Mercury', 'Jupiter', 'Venus', 'Saturn'].forEach((p, i) => {
-                sList += renderItem(p, `${data.shadbala.total[i].toFixed(1)} Virupas`);
-            });
-            document.getElementById('shadbala-list').innerHTML = sList;
-
-            // SAV
-            let savHtml = '';
-            data.ashtakavarga.sav.forEach((b, i) => {
-                savHtml += `<div style="text-align:center; background:#111; padding:10px; border-radius:8px">
-                <div style="font-size:0.7rem; color:#888">House ${i + 1}</div>
-                <div style="font-weight:bold; color:var(--accent)">${b}</div>
-            </div>`;
-            });
-            document.getElementById('sav-chart').innerHTML = savHtml;
         }
 
-        function renderItem(lbl, val) {
-            return `<div class="data-item"><span class="lbl">${lbl}</span><span class="val">${val}</span></div>`;
+        function renderPanchanga() {
+            const p = globalData.panchanga;
+            document.getElementById('p-core').innerHTML = `
+            ${row('Tithi', p.tithi.name + ' (' + p.tithi.paksha + ')')}${row('Nakshatra', p.nakshatra.name + ' (Pad ' + p.nakshatra.pada + ')')}${row('Yoga', p.yoga.name)}${row('Karana', p.karana.name)}${row('Vaara', p.vaara.name)}
+        `;
+            document.getElementById('p-muhurta').innerHTML = `
+            ${row('Rahu Kaalam', p.muhurtas.raahuKaalam.start + ' - ' + p.muhurtas.raahuKaalam.end)}
+            ${row('Yamaganda', p.muhurtas.yamagandaKaalam.start + ' - ' + p.muhurtas.yamagandaKaalam.end)}
+            ${row('Abhijit', p.muhurtas.abhijitMuhurta.start + ' - ' + p.muhurtas.abhijitMuhurta.end)}
+            ${row('Brahma', p.muhurtas.brahmaMuhurta.start + ' - ' + p.muhurtas.brahmaMuhurta.end)}
+        `;
+            document.getElementById('p-solar').innerHTML = `
+            ${row('Sunrise', p.sunrise.string)}${row('Sunset', p.sunset.string)}${row('Moonrise', p.moonrise.string)}${row('Lunar Month', p.lunarMonth.name)}${row('Solar Month', p.solarMonth.name)}
+        `;
         }
+
+        function renderDasha() {
+            const container = document.getElementById('d-tree');
+            container.innerHTML = '';
+            globalData.dashaTree.forEach((maha, mIdx) => {
+                const div = document.createElement('div');
+                div.className = 'dasha-maha';
+                div.innerHTML = `
+                <div class="dasha-header" onclick="toggleD(this)">
+                    <span>${maha.lord} Mahadasha</span>
+                    <span>Ends: ${new Date(maha.endDate).toLocaleDateString()}</span>
+                </div>
+                <div class="sub-dasha" style="display:none"></div>
+            `;
+                const sub = div.querySelector('.sub-dasha');
+                maha.antardashas.forEach(antar => {
+                    const aDiv = document.createElement('div');
+                    aDiv.className = 'dasha-andar';
+                    aDiv.innerHTML = `<div class="dasha-header" onclick="toggleD(this)"><span>- ${antar.lord}</span><span>${new Date(antar.endDate).toLocaleDateString()}</span></div>
+                <div class="pratyantar" style="display:none; margin-left:15px; font-size:0.75rem;"></div>`;
+
+                    const prSub = aDiv.querySelector('.pratyantar');
+                    antar.pratyantardashas.forEach(prat => {
+                        const pDiv = document.createElement('div');
+                        pDiv.innerHTML = `<div class="dasha-header" onclick="toggleD(this)"><span>-- ${prat.lord}</span><span>${new Date(prat.endDate).toLocaleDateString()}</span></div>
+                    <div class="sukshma" style="display:none; margin-left:15px; color:#888;"></div>`;
+
+                        const skSub = pDiv.querySelector('.sukshma');
+                        prat.sookshmadashas.forEach(suk => {
+                            skSub.innerHTML += `<div class="dasha-row" style="display:flex; justify-content:space-between; padding:2px 0;"><span>--- ${suk.lord}</span><span>${new Date(suk.endDate).toLocaleDateString()}</span></div>`;
+                        });
+                        prSub.appendChild(pDiv);
+                    });
+                    sub.appendChild(aDiv);
+                });
+                container.appendChild(div);
+            });
+        }
+
+        function toggleD(el) {
+            const next = el.nextElementSibling;
+            if (next) next.style.display = next.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function renderMore() {
+            let d = '', y = '', s = '';
+            Object.entries(globalData.doshas).forEach(([k, v]) => d += `<div style="margin-bottom:8px"><b>${k}:</b> ${v.message}</div>`);
+            globalData.yogas.forEach(yoga => y += `<div class="val">${yoga}</div>`);
+            ['Sun', 'Moon', 'Mars', 'Mercury', 'Jupiter', 'Venus', 'Saturn'].forEach((p, i) => s += row(p, globalData.shadbala.total[i].toFixed(1) + ' VP'));
+            document.getElementById('m-doshas').innerHTML = d;
+            document.getElementById('m-yogas').innerHTML = y;
+            document.getElementById('m-shadbala').innerHTML = s;
+        }
+
+        function row(l, v) { return `<div class="data-row"><span class="lbl">${l}</span><span class="val">${v}</span></div>`; }
     </script>
 
 </body>
