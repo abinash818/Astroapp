@@ -543,7 +543,10 @@
             const v = document.getElementById('varga-select').value;
             const chart = globalData.vargas[v];
             const container = document.getElementById('si-grid');
-            container.innerHTML = `<div class="si-center"><h2>${v}</h2></div>`;
+
+            // Set dynamic title for Rasi/Amsam
+            const chartTitle = v === 'D1' ? 'RASI (D1)' : (v === 'D9' ? 'AMSAM (D9)' : v);
+            container.innerHTML = `<div class="si-center"><h2>${chartTitle}</h2></div>`;
 
             SIGN_MAP.forEach(([x, y, sid]) => {
                 const cell = document.createElement('div');
@@ -555,7 +558,9 @@
                     if (SIGN_NAMES.indexOf(pData.sign.substring(0, 2)) === sid) {
                         const tag = document.createElement('span');
                         tag.className = 'p-tag' + (pName === 'Ascendant' ? ' asc' : '');
-                        tag.textContent = pName === 'Ascendant' ? 'Lagna' : pName.substring(0, 2);
+                        // Show name and exact degree for detail
+                        const pNameShort = pName === 'Ascendant' ? 'Lagna' : pName.substring(0, 2);
+                        tag.textContent = pNameShort;
                         cell.appendChild(tag);
                     }
                 });

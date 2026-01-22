@@ -17,18 +17,57 @@ const getSignDegree = (long) => {
     return [sign, deg];
 };
 
-// Geocoding Proxy (to avoid CORS issues if any)
+// Geocoding Proxy (Prioritize India)
 app.get('/api/search-place', async (req, res) => {
     try {
         const query = req.query.q;
-        const response = await axios.get(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`, {
+        // Added countrycodes=in to prioritize India as requested
+        const response = await axios.get(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=10&countrycodes=in`, {
             headers: { 'User-Agent': 'AstroApp/1.0' }
         });
-        res.json(response.data);
+        // Filter out results without lat/lon
+        const filtered = response.data.filter(item => item.lat && item.lon);
+        res.json(filtered);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
+
+// Helper for Tamil Date Correction (Ensuring Thai 1 is Jan 15, 2026)
+const getCorrectedTamilDate = (panchanga, lat, lng, timezone) => {
+    const jd = panchanga.julianDay;
+    const place = { latitude: lat, longitude: lng, timezone: timezone };
+
+    // Get standard calculation
+    let tc = jyotish.panchanga.tamilSolarMonthAndDate(jd, place);
+
+    // Tamil Date Logic Fix:
+    // If Sankranti happens after sunset, the month starts the next day.
+    // We check the Sun's longitude at the time of calculation.
+    const sunLong = panchanga.solarMonth.sunLongitude;
+    const currentSign = Math.floor(sunLong / 30);
+
+    // Find when the Sun actually entered this sign
+    const sankranti = jyotish.panchanga.previousSankranti(jd, place, currentSign);
+
+    if (sankranti) {
+        const sunset = jyotish.panchanga.sunset(sankranti.jd, place);
+        // If Sankranti happened after sunset on that day, the month begins on the NEXT day.
+        let monthStartJD = sankranti.jd;
+        if (sankranti.time > sunset.hours) {
+            monthStartJD += 1;
+        }
+
+        // Tamil Date is current JD - monthStartJD + 1
+        const tamilDate = Math.floor(jd - monthStartJD) + 1;
+
+        if (tamilDate > 0) {
+            tc.date = tamilDate;
+        }
+    }
+
+    return tc;
+};
 
 app.post('/calculate', (req, res) => {
     try {
@@ -80,8 +119,8 @@ app.post('/calculate', (req, res) => {
         ];
         const shadbala = jyotish.strengths.calculateShadbala(shadbalaPositions, Math.floor(grahas.La.longitude / 30), panchanga.julianDay, lat, lng);
 
-        // Tamil Calendar Data
-        const tamilCal = jyotish.panchanga.tamilSolarMonthAndDate(panchanga.julianDay, { latitude: lat, longitude: lng, timezone: timezone });
+        // Tamil Calendar Data with correction logic
+        const tamilCal = getCorrectedTamilDate(panchanga, lat, lng, timezone);
 
         res.json({
             success: true,
