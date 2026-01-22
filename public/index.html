@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vedic Astrology Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #a855f7;
+            --accent: #f59e0b;
+            --bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text: #f8fafc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2.5rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+        input, select {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+        }
+
+        button {
+            width: 100%;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.2s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        #results {
+            margin-top: 40px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .result-card h3 {
+            color: var(--accent);
+            font-size: 1rem;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .info-label { color: #94a3b8; }
+        .info-value { font-weight: 600; color: #e2e8f0; }
+
+        .loader {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+            color: var(--primary);
+        }
+
+        .error {
+            background: rgba(239, 68, 68, 0.1);
+            color: #f87171;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 20px;
+            display: none;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Astro Insights</h1>
+    
+    <div class="form-grid">
+        <div class="input-group">
+            <label>Name</label>
+            <input type="text" id="userName" placeholder="John Doe">
+        </div>
+        <div class="input-group">
+            <label>Date of Birth</label>
+            <input type="date" id="dob" value="1990-01-01">
+        </div>
+        <div class="input-group">
+            <label>Time (HH:MM:SS)</label>
+            <input type="time" id="tob" step="1" value="12:00:00">
+        </div>
+        <div class="input-group">
+            <label>Latitude</label>
+            <input type="number" id="lat" value="28.6139" step="any">
+        </div>
+        <div class="input-group">
+            <label>Longitude</label>
+            <input type="number" id="lng" value="77.2090" step="any">
+        </div>
+        <div class="input-group">
+            <label>Timezone Offset</label>
+            <input type="number" id="timezone" value="5.5" step="0.5">
+        </div>
+    </div>
+
+    <button onclick="calculateAstro()">Get Astrology Details</button>
+
+    <div class="loader" id="loader">Calculating cosmic data...</div>
+    <div class="error" id="error"></div>
+
+    <div id="results">
+        <div class="results-grid">
+            <div class="result-card">
+                <h3>Panchanga</h3>
+                <div class="info-row"><span class="info-label">Tithi</span><span class="info-value" id="res-tithi"></span></div>
+                <div class="info-row"><span class="info-label">Nakshatra</span><span class="info-value" id="res-nak"></span></div>
+                <div class="info-row"><span class="info-label">Yoga</span><span class="info-value" id="res-yoga"></span></div>
+                <div class="info-row"><span class="info-label">Day (Vaara)</span><span class="info-value" id="res-vaara"></span></div>
+                <div class="info-row"><span class="info-label">Sunrise</span><span class="info-value" id="res-sunrise"></span></div>
+            </div>
+
+            <div class="result-card">
+                <h3>Key Grahas</h3>
+                <div class="info-row"><span class="info-label">Sun (Surya)</span><span class="info-value" id="plan-Sun"></span></div>
+                <div class="info-row"><span class="info-label">Moon (Chandra)</span><span class="info-value" id="plan-Moon"></span></div>
+                <div class="info-row"><span class="info-label">Lagna (Asc)</span><span class="info-value" id="plan-Lagna"></span></div>
+            </div>
+        </div>
+        
+        <div class="result-card" style="margin-top: 20px;">
+            <h3>All Planetary Positions</h3>
+            <div id="all-planets" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
+                <!-- Dynamically filled -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function calculateAstro() {
+        const results = document.getElementById('results');
+        const loader = document.getElementById('loader');
+        const error = document.getElementById('error');
+        
+        results.style.display = 'none';
+        error.style.display = 'none';
+        loader.style.display = 'block';
+
+        const payload = {
+            dateString: document.getElementById('dob').value,
+            timeString: document.getElementById('tob').value,
+            lat: parseFloat(document.getElementById('lat').value),
+            lng: parseFloat(document.getElementById('lng').value),
+            timezone: parseFloat(document.getElementById('timezone').value)
+        };
+
+        try {
+            const response = await fetch('/calculate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const result = await response.json();
+
+            if (!result.success) throw new Error(result.error);
+
+            const data = result.data;
+            
+            // Panchanga
+            document.getElementById('res-tithi').textContent = `${data.panchanga.tithi.name} (${data.panchanga.tithi.paksha})`;
+            document.getElementById('res-nak').textContent = `${data.panchanga.nakshatra.name} (Pada ${data.panchanga.nakshatra.pada})`;
+            document.getElementById('res-yoga').textContent = data.panchanga.yoga.name;
+            document.getElementById('res-vaara').textContent = data.panchanga.vaara.name;
+            document.getElementById('res-sunrise').textContent = data.panchanga.sunrise.string;
+
+            // Grahas
+            document.getElementById('plan-Sun').textContent = `${data.grahas.Su.longitude.toFixed(2)}° ${data.grahas.Su.rashi}`;
+            document.getElementById('plan-Moon').textContent = `${data.grahas.Mo.longitude.toFixed(2)}° ${data.grahas.Mo.rashi}`;
+            document.getElementById('plan-Lagna').textContent = `${data.grahas.La.longitude.toFixed(2)}° ${data.grahas.La.rashi}`;
+
+            // All Planets
+            const allPlanetsDiv = document.getElementById('all-planets');
+            allPlanetsDiv.innerHTML = '';
+            
+            Object.keys(data.grahas).forEach(key => {
+                const p = data.grahas[key];
+                if (p.longitude !== undefined) {
+                    const div = document.createElement('div');
+                    div.className = 'info-row';
+                    div.style.flexDirection = 'column';
+                    div.style.alignItems = 'flex-start';
+                    div.innerHTML = `
+                        <span class="info-label">${key}</span>
+                        <span class="info-value" style="font-size: 0.85rem">${p.longitude.toFixed(1)}° ${p.rashi}</span>
+                    `;
+                    allPlanetsDiv.appendChild(div);
+                }
+            });
+
+            loader.style.display = 'none';
+            results.style.display = 'block';
+        } catch (err) {
+            loader.style.display = 'none';
+            error.textContent = "Error: " + err.message;
+            error.style.display = 'block';
+        }
+    }
+</script>
+
+</body>
+</html>

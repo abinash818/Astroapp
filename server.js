@@ -7,22 +7,20 @@ const port = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static('public'));
 
 // Main endpoint for astrology calculations
 app.post('/calculate', (req, res) => {
     try {
-        const birthData = req.body;
+        const birthData = { ...req.body };
 
-        // Validation: Verify if the required fields are present
-        // birthData should have: dateString, timeString, lat, lng, timezone
-        // OR year, month, date, hour, min, sec, lat, lng, timezone for panchanga
+        // Ensure lat/lng/timezone are numbers
+        birthData.lat = parseFloat(birthData.lat);
+        birthData.lng = parseFloat(birthData.lng);
+        birthData.timezone = parseFloat(birthData.timezone);
 
-        // 1. Get Graha Positions
-        const grahas = jyotish.grahas.getGrahasPosition(birthData);
-
-        // 2. Get Panchanga
-        // Ensure manual fields are present for panchanga if not provided
-        if (!birthData.year && birthData.dateString) {
+        // Validation for date format (needs YYYY-MM-DD for getValidatedBirthDetails)
+        if (birthData.dateString) {
             const [y, m, d] = birthData.dateString.split('-').map(Number);
             const [h, min, s] = (birthData.timeString || "00:00:00").split(':').map(Number);
             birthData.year = y;
@@ -33,6 +31,10 @@ app.post('/calculate', (req, res) => {
             birthData.sec = s;
         }
 
+        // 1. Get Graha Positions
+        const grahas = jyotish.grahas.getGrahasPosition(birthData);
+
+        // 2. Get Panchanga
         const panchanga = jyotish.panchanga.calculatePanchanga(birthData);
 
         res.json({
@@ -52,7 +54,7 @@ app.post('/calculate', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-    res.send('Astrology API is running. use POST /calculate to get data.');
+    res.sendFile(__dirname + '/public/index.html');
 });
 
 app.listen(port, () => {
