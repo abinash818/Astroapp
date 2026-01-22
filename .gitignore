@@ -1,0 +1,8 @@
+node_modules
+.env
+*.log
+output.log
+last_error.txt
+last_output.txt
+test-jyotish.js
+check-swisseph.js
