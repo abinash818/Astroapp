@@ -594,17 +594,75 @@
 
         function renderDasha() {
             const tree = document.getElementById('d-tree'); tree.innerHTML = '';
-            globalData.dashaTree.forEach((m, mi) => {
+
+            // 1. Show Current Active Dasha Summary
+            if (globalData.activeDasha) {
+                const ad = globalData.activeDasha;
+                const activeDiv = document.createElement('div');
+                activeDiv.className = 'neon-card';
+                activeDiv.style.marginBottom = '30px';
+                activeDiv.style.borderColor = 'var(--p-1)';
+                activeDiv.innerHTML = `
+                    <h3 style="color:var(--p-1)">Current Active Periods (Now)</h3>
+                    ${row('Mahadasha', ad.mahadasha.lord + ' (until ' + new Date(ad.mahadasha.endDate).toLocaleDateString() + ')')}
+                    ${row('Bhukti (Antar)', ad.antardasha.lord + ' (until ' + new Date(ad.antardasha.endDate).toLocaleDateString() + ')')}
+                    ${row('Antara (Pratyantar)', ad.pratyantardasha.lord + ' (until ' + new Date(ad.pratyantardasha.endDate).toLocaleDateString() + ')')}
+                    ${row('Sukshma', ad.sookshmadasha.lord + ' (until ' + new Date(ad.sookshmadasha.endDate).toLocaleDateString() + ')')}
+                    ${row('Prana', ad.pranadasha.lord + ' (until ' + new Date(ad.pranadasha.endDate).toLocaleDateString() + ')')}
+                `;
+                tree.appendChild(activeDiv);
+            }
+
+            // 2. Hierarchical Dasha Tree
+            const header = document.createElement('h3');
+            header.textContent = 'Full Dasha Timeline';
+            header.style.marginBottom = '15px';
+            tree.appendChild(header);
+
+            globalData.dashaTree.forEach((m) => {
                 const div = document.createElement('div'); div.className = 'dasha-item';
-                div.innerHTML = `<div class="dasha-btn" onclick="this.nextElementSibling.style.display=(this.nextElementSibling.style.display==='none'?'block':'none')">
-                <span>${m.lord} MAHA</span> <span>Ends: ${new Date(m.endDate).toLocaleDateString()}</span>
-            </div><div class="sub" style="display:none; padding-left:20px; margin-top:10px"></div>`;
+                div.innerHTML = `
+                    <div class="dasha-btn" onclick="toggleDasha(this)">
+                        <span style="color:var(--p-3)">${m.lord} MAHA</span> 
+                        <span>Ends: ${new Date(m.endDate).toLocaleDateString()}</span>
+                    </div>
+                    <div class="sub" style="display:none; padding-left:15px; margin-top:10px; border-left: 1px solid var(--border);"></div>
+                `;
                 const sub = div.querySelector('.sub');
                 m.antardashas.forEach(a => {
-                    sub.innerHTML += `<div class="data-row"><span>${a.lord} BHUKTI</span> <span>${new Date(a.endDate).toLocaleDateString()}</span></div>`;
+                    const aDiv = document.createElement('div');
+                    aDiv.style.marginBottom = '5px';
+                    aDiv.innerHTML = `
+                        <div class="dasha-btn" style="font-size:0.9rem" onclick="toggleDasha(this)">
+                            <span>${a.lord} Bhukti</span> <span>${new Date(a.endDate).toLocaleDateString()}</span>
+                        </div>
+                        <div class="sub-sub" style="display:none; padding-left:15px; margin-top:5px; border-left: 1px dashed var(--border);"></div>
+                    `;
+                    const subSub = aDiv.querySelector('.sub-sub');
+                    a.pratyantardashas.forEach(p => {
+                        const pDiv = document.createElement('div');
+                        pDiv.style.fontSize = '0.85rem';
+                        pDiv.innerHTML = `
+                            <div class="dasha-btn" onclick="toggleDasha(this)">
+                                <span style="color:#aaa">${p.lord} Antara</span> <span>${new Date(p.endDate).toLocaleDateString()}</span>
+                            </div>
+                            <div class="sub-sukshma" style="display:none; padding-left:15px; margin-top:5px; font-size:0.8rem; color:#888;"></div>
+                        `;
+                        const sukSub = pDiv.querySelector('.sub-sukshma');
+                        p.sookshmadashas.forEach(s => {
+                            sukSub.innerHTML += `<div class="data-row"><span>${s.lord} Sukshma</span><span>${new Date(s.endDate).toLocaleDateString()}</span></div>`;
+                        });
+                        subSub.appendChild(pDiv);
+                    });
+                    sub.appendChild(aDiv);
                 });
                 tree.appendChild(div);
             });
+        }
+
+        function toggleDasha(el) {
+            const next = el.nextElementSibling;
+            if (next) next.style.display = (next.style.display === 'none' ? 'block' : 'none');
         }
 
         function renderMore() {

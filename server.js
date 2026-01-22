@@ -122,6 +122,13 @@ app.post('/calculate', (req, res) => {
         // Tamil Calendar Data with correction logic
         const tamilCal = getCorrectedTamilDate(panchanga, lat, lng, timezone);
 
+        // Calculate Hierarchical Dasha (4 levels: Maha, Antar, Pratyantar, Sukshma)
+        const dashaTree = jyotish.dashas.vimshottari.generateDashaTree(birthDateObj, grahas.Mo.longitude, 4);
+
+        // Get Active Dasha Periods for TODAY (5 levels including Prana)
+        // Using current time provided in context: 2026-01-22T23:27:34+05:30
+        const activeDasha = jyotish.dashas.vimshottari.getDashasForDate(birthDateObj, grahas.Mo.longitude, new Date());
+
         res.json({
             success: true,
             data: {
@@ -130,6 +137,7 @@ app.post('/calculate', (req, res) => {
                 tamilCalendar: tamilCal,
                 vargas,
                 dashaTree,
+                activeDasha,
                 doshas,
                 yogas: yogas.summary.present,
                 shadbala
