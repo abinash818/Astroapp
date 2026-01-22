@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const jyotish = require('jyotish-calc');
+const moment = require('moment-timezone');
+const axios = require('axios');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -14,6 +16,19 @@ const getSignDegree = (long) => {
     const deg = long % 30;
     return [sign, deg];
 };
+
+// Geocoding Proxy (to avoid CORS issues if any)
+app.get('/api/search-place', async (req, res) => {
+    try {
+        const query = req.query.q;
+        const response = await axios.get(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`, {
+            headers: { 'User-Agent': 'AstroApp/1.0' }
+        });
+        res.json(response.data);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
 
 app.post('/calculate', (req, res) => {
     try {
@@ -36,68 +51,38 @@ app.post('/calculate', (req, res) => {
         const panchanga = jyotish.panchanga.calculatePanchanga(birthData);
 
         const avPositions = {
-            Sun: grahas.Su.longitude,
-            Moon: grahas.Mo.longitude,
-            Mars: grahas.Ma.longitude,
-            Mercury: grahas.Me.longitude,
-            Jupiter: grahas.Ju.longitude,
-            Venus: grahas.Ve.longitude,
-            Saturn: grahas.Sa.longitude,
-            Ascendant: grahas.La.longitude,
-            Rahu: grahas.Ra.longitude,
-            Ketu: grahas.Ke.longitude
+            Sun: grahas.Su.longitude, Moon: grahas.Mo.longitude, Mars: grahas.Ma.longitude,
+            Mercury: grahas.Me.longitude, Jupiter: grahas.Ju.longitude, Venus: grahas.Ve.longitude,
+            Saturn: grahas.Sa.longitude, Ascendant: grahas.La.longitude, Rahu: grahas.Ra.longitude, Ketu: grahas.Ke.longitude
         };
 
-        // 1. All 21 Divisional Charts
-        const allVargas = {};
-        const vargaList = ['D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7', 'D8', 'D9', 'D10', 'D11', 'D12', 'D16', 'D20', 'D24', 'D27', 'D30', 'D32', 'D40', 'D45', 'D60'];
-        vargaList.forEach(v => {
-            allVargas[v] = jyotish.vargas.calculateVargaChart(avPositions, v);
-        });
+        const vargaList = ['D1', 'D2', 'D3', 'D4', 'D7', 'D9', 'D10', 'D12', 'D60'];
+        const vargas = {};
+        vargaList.forEach(v => vargas[v] = jyotish.vargas.calculateVargaChart(avPositions, v));
 
-        // 2. Multi-level Dasha (Maha, Antar, Pratyantar, Sukshma)
         const birthDateObj = new Date(birthData.year, birthData.month - 1, birthData.date, birthData.hour, birthData.min);
         const dashaTree = jyotish.dashas.vimshottari.generateDashaTree(birthDateObj, grahas.Mo.longitude, 4);
 
-        // 3. Dosha and Yoga
         const doshaPositions = [
-            [0, getSignDegree(grahas.Su.longitude)],
-            [1, getSignDegree(grahas.Mo.longitude)],
-            [2, getSignDegree(grahas.Ma.longitude)],
-            [3, getSignDegree(grahas.Me.longitude)],
-            [4, getSignDegree(grahas.Ju.longitude)],
-            [5, getSignDegree(grahas.Ve.longitude)],
-            [6, getSignDegree(grahas.Sa.longitude)],
-            [7, getSignDegree(grahas.Ra.longitude)],
-            [8, getSignDegree(grahas.Ke.longitude)],
-            ['L', getSignDegree(grahas.La.longitude)]
+            [0, getSignDegree(grahas.Su.longitude)], [1, getSignDegree(grahas.Mo.longitude)],
+            [2, getSignDegree(grahas.Ma.longitude)], [3, getSignDegree(grahas.Me.longitude)],
+            [4, getSignDegree(grahas.Ju.longitude)], [5, getSignDegree(grahas.Ve.longitude)],
+            [6, getSignDegree(grahas.Sa.longitude)], [7, getSignDegree(grahas.Ra.longitude)],
+            [8, getSignDegree(grahas.Ke.longitude)], ['L', getSignDegree(grahas.La.longitude)]
         ];
         const doshas = jyotish.doshas.getDoshaDetails(doshaPositions, grahas.Mo.longitude);
         const yogas = jyotish.yogas.getYogaDetails(doshaPositions);
 
-        // 4. Shadbala
         const shadbalaPositions = [
-            getSignDegree(grahas.Su.longitude),
-            getSignDegree(grahas.Mo.longitude),
-            getSignDegree(grahas.Ma.longitude),
-            getSignDegree(grahas.Me.longitude),
-            getSignDegree(grahas.Ju.longitude),
-            getSignDegree(grahas.Ve.longitude),
+            getSignDegree(grahas.Su.longitude), getSignDegree(grahas.Mo.longitude), getSignDegree(grahas.Ma.longitude),
+            getSignDegree(grahas.Me.longitude), getSignDegree(grahas.Ju.longitude), getSignDegree(grahas.Ve.longitude),
             getSignDegree(grahas.Sa.longitude)
         ];
         const shadbala = jyotish.strengths.calculateShadbala(shadbalaPositions, Math.floor(grahas.La.longitude / 30), panchanga.julianDay, lat, lng);
 
         res.json({
             success: true,
-            data: {
-                grahas,
-                panchanga,
-                vargas: allVargas,
-                dashaTree,
-                doshas,
-                yogas: yogas.summary.present,
-                shadbala
-            }
+            data: { grahas, panchanga, vargas, dashaTree, doshas, yogas: yogas.summary.present, shadbala }
         });
     } catch (error) {
         console.error("Calculation Error:", error);
@@ -105,10 +90,6 @@ app.post('/calculate', (req, res) => {
     }
 });
 
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/public/index.html');
-});
+app.get('/', (req, res) => res.sendFile(__dirname + '/public/index.html'));
 
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-});
+app.listen(port, () => console.log(`Server is running on port ${port}`));
