@@ -80,9 +80,21 @@ app.post('/calculate', (req, res) => {
         ];
         const shadbala = jyotish.strengths.calculateShadbala(shadbalaPositions, Math.floor(grahas.La.longitude / 30), panchanga.julianDay, lat, lng);
 
+        // Tamil Calendar Data
+        const tamilCal = jyotish.panchanga.tamilSolarMonthAndDate(panchanga.julianDay, { latitude: lat, longitude: lng, timezone: timezone });
+
         res.json({
             success: true,
-            data: { grahas, panchanga, vargas, dashaTree, doshas, yogas: yogas.summary.present, shadbala }
+            data: {
+                grahas,
+                panchanga,
+                tamilCalendar: tamilCal,
+                vargas,
+                dashaTree,
+                doshas,
+                yogas: yogas.summary.present,
+                shadbala
+            }
         });
     } catch (error) {
         console.error("Calculation Error:", error);

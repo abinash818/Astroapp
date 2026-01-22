@@ -565,16 +565,26 @@
 
         function renderPanchanga() {
             const p = globalData.panchanga;
+            const tc = globalData.tamilCalendar;
             document.getElementById('p-core').innerHTML = `
-            ${row('Tithi', p.tithi.name)}${row('Nakshatra', p.nakshatra.name)}${row('Yoga', p.yoga.name)}${row('Vaara', p.vaara.name)}
-        `;
+                ${row('Tamil Year', p.samvatsara.name)}
+                ${row('Tamil Month', tc.monthName)}
+                ${row('Tamil Date', tc.date)}
+                ${row('Tithi', p.tithi.name)}
+                ${row('Nakshatra', p.nakshatra.name)}
+                ${row('Yoga', p.yoga.name)}
+                ${row('Vaara', p.vaara.name)}
+            `;
             document.getElementById('p-muhurta').innerHTML = `
-            ${row('Rahu', p.muhurtas.raahuKaalam.start)}${row('Abhijit', p.muhurtas.abhijitMuhurta.start)}
-            ${row('Brahma', p.muhurtas.brahmaMuhurta.start)}
-        `;
+                ${row('Rahu', p.muhurtas.raahuKaalam.start)}
+                ${row('Abhijit', p.muhurtas.abhijitMuhurta.start)}
+                ${row('Brahma', p.muhurtas.brahmaMuhurta.start)}
+            `;
             document.getElementById('p-solar').innerHTML = `
-            ${row('Sunrise', p.sunrise.string)}${row('Lunar Month', p.lunarMonth.name)}
-        `;
+                ${row('Sunrise', p.sunrise.string)}
+                ${row('Lunar Month', p.lunarMonth.name)}
+                ${row('Solar Sign', p.solarMonth.name)}
+            `;
         }
 
         function renderDasha() {
