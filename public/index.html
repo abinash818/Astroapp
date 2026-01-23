@@ -4,374 +4,323 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AstroGlow Pro - Professional Vedic Software</title>
+    <title>AstroGlow Pro - Professional Astrology Dashboard</title>
     <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:wght@700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap"
         rel="stylesheet">
     <style>
         :root {
-            --p-1: #ff00cc;
-            --p-2: #3333ff;
-            --p-3: #00ffcc;
-            --accent: #ffcc00;
-            --bg: #05070a;
-            --glass: rgba(20, 25, 40, 0.95);
-            --border: rgba(255, 255, 255, 0.1);
-            --hdr: #0a8f5f;
-            /* Green header from screenshot */
+            --primary: #2563eb;
+            --primary-light: #dbeafe;
+            --bg: #f8fafc;
+            --sidebar: #ffffff;
+            --card: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --accent: #8b5cf6;
+            --success: #10b981;
+            --error: #ef4444;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Inter', sans-serif;
         }
 
         body {
             background: var(--bg);
-            color: #e0e0e0;
-            min-height: 100vh;
+            color: var(--text);
             overflow-x: hidden;
         }
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
+        /* Sidebar Nav */
+        .layout {
+            display: flex;
+            min-height: 100vh;
         }
 
-        /* Premium Header */
-        header {
-            text-align: center;
-            padding: 40px 0;
+        .sidebar {
+            width: 260px;
+            background: var(--sidebar);
+            border-right: 1px solid var(--border);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            position: fixed;
+            height: 100vh;
         }
 
-        header h1 {
+        .logo {
             font-family: 'Playfair Display', serif;
-            font-size: 3.5rem;
-            background: linear-gradient(to right, var(--p-1), var(--p-3), var(--p-2));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 10px rgba(0, 255, 204, 0.3));
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 30px;
+            text-align: center;
         }
 
-        /* Modern Form */
-        .glass-panel {
-            background: var(--glass);
-            backdrop-filter: blur(30px);
+        .nav-item {
+            padding: 12px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            color: var(--text-light);
+            font-weight: 500;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-item:hover {
+            background: var(--bg);
+            color: var(--primary);
+        }
+
+        .nav-item.active {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        /* Main Content */
+        .main {
+            flex: 1;
+            margin-left: 260px;
+            padding: 40px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #111;
+        }
+
+        /* Tab Screens */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* Cards & Forms */
+        .card {
+            background: var(--card);
             border: 1px solid var(--border);
-            border-radius: 30px;
-            padding: 35px;
-            margin-bottom: 40px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
         }
 
         .form-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 25px;
+            gap: 20px;
         }
 
         .input-group {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
             position: relative;
         }
 
         label {
             font-size: 0.75rem;
-            color: #888;
+            color: var(--text-light);
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
-            font-weight: 600;
         }
 
         input,
         select {
-            background: rgba(255, 255, 255, 0.03);
+            padding: 12px;
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 14px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
             color: #fff;
-            font-size: 0.95rem;
-            transition: all 0.3s;
-        }
-
-        input:focus,
-        select:focus {
-            border-color: var(--p-3);
-            background: rgba(255, 255, 255, 0.06);
-            outline: none;
-            box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
-        }
-
-        .btn-ignite {
-            grid-column: 1 / -1;
-            background: linear-gradient(135deg, var(--p-1), var(--p-2));
             border: none;
-            padding: 18px;
-            border-radius: 15px;
-            color: #fff;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: transform 0.2s;
-        }
-
-        .btn-ignite:hover {
-            transform: scale(1.01);
-            box-shadow: 0 0 30px rgba(255, 0, 204, 0.4);
-        }
-
-        /* Report Modal Theme */
-        .report-header {
-            background: var(--hdr);
-            padding: 15px 25px;
-            border-radius: 15px 15px 0 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            padding: 14px 25px;
+            border-radius: 10px;
             font-weight: 700;
-            color: #fff;
-            border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: 0.2s;
         }
 
-        .report-body {
-            background: #fff;
-            color: #333;
-            border-radius: 0 0 15px 15px;
-            padding: 25px;
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
         }
 
-        /* Professional Planet Table */
-        .p-table {
+        /* Grid Layouts */
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .grid-vargas {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        /* Tables */
+        table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 30px;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-top: 15px;
         }
 
-        .p-table th {
-            background: var(--hdr);
-            color: #fff;
-            padding: 12px;
-            font-size: 0.85rem;
-            font-weight: 800;
+        th {
             text-align: left;
-            text-transform: uppercase;
-        }
-
-        .p-table td {
-            padding: 12px;
-            border-bottom: 1px solid #eee;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #444;
-        }
-
-        .p-table tr:nth-child(even) {
-            background: #f9f9f9;
-        }
-
-        .status-tag {
-            padding: 4px 10px;
-            border-radius: 6px;
             font-size: 0.75rem;
-            text-transform: uppercase;
-            font-weight: 800;
+            color: var(--text-light);
+            padding: 10px;
+            border-bottom: 2px solid var(--border);
         }
 
-        .status-exalted {
-            background: #e6ffed;
-            color: #22863a;
+        td {
+            padding: 12px 10px;
+            font-size: 0.85rem;
+            border-bottom: 1px solid var(--border);
         }
 
-        .status-debilitated {
-            background: #ffeef0;
-            color: #d73a49;
-        }
-
-        .status-neutral {
-            background: #f6f8fa;
-            color: #586069;
-        }
-
-        .status-friend {
-            background: #f1f8ff;
-            color: #0366d6;
-        }
-
-        .status-enemy {
-            background: #fff5eb;
-            color: #e36209;
-        }
-
-        .status-own {
-            background: #fff8c5;
-            color: #735c0f;
-        }
-
-        /* Professional Chart */
-        .chart-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            background: #fff;
-            border-radius: 15px;
-            border: 1px solid #ddd;
-        }
-
-        .si-grid {
+        /* Chart */
+        .chart-box {
+            width: 320px;
+            aspect-ratio: 1;
+            border: 2px solid #333;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             grid-template-rows: repeat(4, 1fr);
-            width: 480px;
-            height: 480px;
-            border: 2px solid #555;
             background: #fff;
+            margin: 0 auto;
         }
 
-        .si-cell {
-            border: 0.5px solid #ccc;
+        .cell {
+            border: 0.5px solid #ddd;
+            padding: 5px;
             position: relative;
-            padding: 8px;
             display: flex;
             flex-wrap: wrap;
-            align-content: flex-start;
-            gap: 4px;
+            gap: 2px;
         }
 
-        .si-cell::after {
+        .cell::after {
             content: attr(data-sign);
             position: absolute;
             bottom: 2px;
-            right: 4px;
-            font-size: 0.6rem;
-            color: #bbb;
-            pointer-events: none;
+            right: 2px;
+            font-size: 0.5rem;
+            color: #ccc;
         }
 
-        .planet-icon {
-            font-size: 0.75rem;
+        .p-tag {
+            font-size: 0.65rem;
             font-weight: 800;
-            padding: 2px 5px;
-            border-radius: 4px;
-            color: #333;
+            color: #2563eb;
         }
 
-        .planet-icon.asc {
-            border: 1.5px solid #d73a49;
-            color: #d73a49;
+        .p-tag.asc {
+            color: #ef4444;
         }
 
-        .si-center {
+        .cell-center {
             grid-column: 2/4;
             grid-row: 2/4;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             font-weight: 800;
-            font-size: 1.2rem;
-            color: #d73a49;
-            border: 1px solid #ccc;
-        }
-
-        /* Dasha System */
-        .dasha-box {
-            margin-top: 30px;
-        }
-
-        .dasha-active {
-            border: 2px solid var(--p-3);
-            padding: 15px;
-            border-radius: 15px;
-            background: rgba(0, 255, 204, 0.05);
-        }
-
-        .loader {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .spinner {
-            width: 60px;
-            height: 60px;
-            border: 5px solid #333;
-            border-top: 5px solid var(--p-3);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .tab {
-            padding: 8px 20px;
-            border-radius: 20px;
-            background: #eee;
-            color: #555;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 0.85rem;
-        }
-
-        .tab.active {
-            background: var(--hdr);
-            color: #fff;
+            font-size: 0.8rem;
+            background: #fdfdfd;
         }
 
         /* Suggestions */
         .suggestions {
             position: absolute;
             top: 100%;
-            background: #1a1a1a;
+            left: 0;
+            right: 0;
+            background: #fff;
             border: 1px solid var(--border);
-            width: 100%;
             z-index: 100;
-            border-radius: 12px;
-            margin-top: 5px;
+            border-radius: 8px;
             max-height: 200px;
             overflow-y: auto;
             display: none;
         }
 
         .suggest-item {
-            padding: 12px 15px;
+            padding: 10px;
             cursor: pointer;
             border-bottom: 1px solid var(--border);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .suggest-item:hover {
-            background: #222;
-            color: var(--p-3);
+            background: var(--bg);
         }
 
-        /* Detail Area */
-        #results {
+        .tag {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .tag-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .tag-error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .loader {
             display: none;
-            margin-top: 20px;
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--primary-light);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
@@ -382,268 +331,233 @@
         <div class="spinner"></div>
     </div>
 
-    <div class="container">
-        <header>
-            <h1>AstroGlow Pro</h1>
-            <p>Professional Vedic Astrology Engine</p>
-        </header>
-
-        <!-- Main Navigation -->
-        <div class="tabs" style="justify-content: center; margin-bottom: 25px;">
-            <div class="tab active" style="font-size: 1rem; padding: 12px 30px;" onclick="showMainTab('personal')">
-                Personal Horoscope</div>
-            <div class="tab" style="font-size: 1rem; padding: 12px 30px;" onclick="showMainTab('matching')">Marriage
-                Matching</div>
+    <div class="layout">
+        <div class="sidebar">
+            <div class="logo">AstroGlow Pro</div>
+            <div class="nav-item active" onclick="switchScreen('dashboard')">🏠 Overview</div>
+            <div class="nav-item" onclick="switchScreen('vargas')">📐 Divisional Charts</div>
+            <div class="nav-item" onclick="switchScreen('dashas')">⏳ Dashas (Vimshottari)</div>
+            <div class="nav-item" onclick="switchScreen('jaimini-kp')">🧿 KP & Jaimini</div>
+            <div class="nav-item" onclick="switchScreen('analytics')">📊 Shadbala & Yogas</div>
+            <div class="nav-item" onclick="switchScreen('matching')">❤️ Marriage Match</div>
         </div>
 
-        <!-- Personal Tab -->
-        <div id="personal-tab">
-            <div class="glass-panel">
+        <div class="main">
+            <div class="header">
+                <h1 id="screen-title">Dashboard Overview</h1>
+                <div id="active-user-info" style="font-weight: 600; color: var(--text-light); font-size: 0.9rem;"></div>
+            </div>
+
+            <!-- Global Input Area -->
+            <div class="card" id="global-input">
                 <div class="form-grid">
-                    <div class="input-group" style="grid-column: 1 / -1; position: relative;">
-                        <label>Place of Birth</label>
-                        <input type="text" id="place-search" placeholder="Enter city name (e.g. Madurai, Chennai)...">
-                        <div class="suggestions" id="suggestions"></div>
+                    <div class="input-group" style="grid-column: 1/3;">
+                        <label>Place Name</label>
+                        <input type="text" id="g-place" placeholder="City Search (e.g. Madurai)">
+                        <div class="suggestions" id="g-suggest"></div>
                     </div>
-                    <div class="input-group">
-                        <label>Full Name</label>
-                        <input type="text" id="user-name" placeholder="Enter your name">
+                    <div class="input-group"><label>Date</label><input type="date" id="g-dob" value="1993-10-29"></div>
+                    <div class="input-group"><label>Time</label><input type="time" id="g-tob" value="06:45:00" step="1">
                     </div>
-                    <div class="input-group">
-                        <label>Gender</label>
-                        <select id="gender">
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                        </select>
-                    </div>
-                    <div class="input-group"><label>Birth Date</label><input type="date" id="dob" value="1993-10-29">
-                    </div>
-                    <div class="input-group"><label>Birth Time</label><input type="time" id="tob" step="1"
-                            value="06:45:00"></div>
-                    <div class="input-group"><label>Timezone</label><input type="number" id="timezone" value="5.5"
+                    <div class="input-group"><label>Timezone</label><input type="number" id="g-tz" value="5.5"
                             step="0.5"></div>
-                    <input type="hidden" id="lat" value="9.9252">
-                    <input type="hidden" id="lng" value="78.1198">
-                    <button class="btn-ignite" onclick="calculate()">Generate Professional Chart</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Matching Tab -->
-        <div id="matching-tab" style="display:none;">
-            <div class="glass-panel">
-                <div class="form-grid">
-                    <div style="grid-column: 1 / 2;">
-                        <h4 style="color:var(--p-1); margin-bottom:15px; text-transform:uppercase; font-size:0.8rem;">
-                            Boy's Info</h4>
-                        <div class="input-group">
-                            <label>Nakshatra</label>
-                            <select id="boy-nak"></select>
-                        </div>
-                        <div class="input-group" style="margin-top:10px;">
-                            <label>Rasi</label>
-                            <select id="boy-rasi"></select>
-                        </div>
-                    </div>
-                    <div style="grid-column: 2 / 3;">
-                        <h4 style="color:var(--p-3); margin-bottom:15px; text-transform:uppercase; font-size:0.8rem;">
-                            Girl's Info</h4>
-                        <div class="input-group">
-                            <label>Nakshatra</label>
-                            <select id="girl-nak"></select>
-                        </div>
-                        <div class="input-group" style="margin-top:10px;">
-                            <label>Rasi</label>
-                            <select id="girl-rasi"></select>
-                        </div>
-                    </div>
-                    <button class="btn-ignite" onclick="runMatching()">Check Marriage Compatibility</button>
+                    <button class="btn-primary" onclick="calculateAll()">Run All Engines</button>
+                    <input type="hidden" id="g-lat" value="9.9252"><input type="hidden" id="g-lng" value="78.1198">
                 </div>
             </div>
 
-            <div id="match-results" style="display:none; margin-top:20px;">
-                <div class="report-header" style="background:#6a11cb;">Marriage Compatibility Report</div>
-                <div class="report-body">
-                    <div style="text-align:center; font-size:2rem; font-weight:800; color:#333; margin-bottom:20px;"
-                        id="match-score-display"></div>
-                    <div id="match-details"
-                        style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:20px;">
+            <!-- Screens -->
+            <div id="s-dashboard" class="screen active">
+                <div class="grid-3">
+                    <div class="card">
+                        <h3 style="margin-bottom:15px; font-size:1rem;">Rasi Chart (D1)</h3>
+                        <div class="chart-box" id="chart-d1"></div>
+                    </div>
+                    <div class="card">
+                        <h3 style="margin-bottom:15px; font-size:1rem;">Panchangam</h3>
+                        <div id="panchanga-data"></div>
+                    </div>
+                    <div class="card">
+                        <h3 style="margin-bottom:15px; font-size:1rem;">Planetary Degrees</h3>
+                        <div id="planet-data" style="max-height: 350px; overflow-y: auto;"></div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div id="results">
-            <div class="report-header" id="r-header">
-                <span id="header-text">Match Chart - 1993-10-29 | Madurai, India</span>
-                <span style="cursor:pointer" onclick="document.getElementById('results').style.display='none'">✖</span>
+            <div id="s-vargas" class="screen">
+                <div class="grid-vargas" id="varga-grid"></div>
             </div>
-            <div class="report-body">
-                <table class="p-table">
-                    <thead>
-                        <tr>
-                            <th>இராகம்</th>
-                            <th>ராசி</th>
-                            <th>நட்சத்திரம்</th>
-                            <th>நட்சத்திர நாதன்</th>
-                            <th>பாதம்</th>
-                            <th>நிலை</th>
-                            <th>டிகிரி</th>
-                        </tr>
-                    </thead>
-                    <tbody id="p-table-body"></tbody>
-                </table>
 
-                <div class="chart-container">
-                    <div class="tabs">
-                        <div class="tab active" onclick="switchVarga(event, 'D1')">இராசி கட்டம்</div>
-                        <div class="tab" onclick="switchVarga(event, 'D9')">அம்ச கட்டம்</div>
-                        <div class="tab" onclick="switchVarga(event, 'D10')">பவ கட்டம் (D10)</div>
-                    </div>
-                    <div style="font-size:0.7rem; color:#888; font-weight:800; margin-bottom:10px;">இராசி கட்டம்
-                        (Dignity Colors)</div>
-                    <div class="si-grid" id="si-grid"></div>
+            <div id="s-dashas" class="screen">
+                <div class="card">
+                    <h3>Vimshottari Dasha Hierarchy</h3>
+                    <div id="dasha-tree" style="margin-top:20px;"></div>
                 </div>
+            </div>
 
-                <div class="dasha-box" id="dasha-active-area"></div>
-                <div id="full-dasha" style="margin-top:20px; color:#555"></div>
+            <div id="s-jaimini-kp" class="screen">
+                <div class="grid-3">
+                    <div class="card">
+                        <h3>Jaimini Chara Karakas</h3>
+                        <div id="jaimini-data"></div>
+                    </div>
+                    <div class="card" style="grid-column: span 2;">
+                        <h3>KP House/Planet Significators</h3>
+                        <div id="kp-data"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="s-analytics" class="screen">
+                <div class="grid-3">
+                    <div class="card">
+                        <h3>Shadbala Points</h3>
+                        <div id="shadbala-data"></div>
+                    </div>
+                    <div class="card">
+                        <h3>Detected Yogas</h3>
+                        <div id="yoga-data" style="max-height:400px; overflow-y:auto;"></div>
+                    </div>
+                    <div class="card">
+                        <h3>Ashtakavarga (Sarva)</h3>
+                        <div id="av-data"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="s-matching" class="screen">
+                <div class="card">
+                    <h3>Marriage Porutham (Birth Detail Match)</h3>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:40px; margin-top:20px;">
+                        <div>
+                            <h4 style="margin-bottom:15px; color:var(--primary);">Boy's Details</h4>
+                            <div class="form-grid" style="grid-template-columns: 1fr;">
+                                <div class="input-group">
+                                    <label>Place</label>
+                                    <input type="text" id="b-place" placeholder="Search Boy's birthplace">
+                                    <div class="suggestions" id="b-suggest"></div>
+                                </div>
+                                <div class="input-group"><label>Date</label><input type="date" id="b-dob"
+                                        value="1990-01-01"></div>
+                                <div class="input-group"><label>Time</label><input type="time" id="b-tob"
+                                        value="12:00:00" step="1"></div>
+                                <input type="hidden" id="b-lat" value="28.6"><input type="hidden" id="b-lng"
+                                    value="77.2">
+                            </div>
+                        </div>
+                        <div>
+                            <h4 style="margin-bottom:15px; color:var(--accent);">Girl's Details</h4>
+                            <div class="form-grid" style="grid-template-columns: 1fr;">
+                                <div class="input-group">
+                                    <label>Place</label>
+                                    <input type="text" id="g-place-match" placeholder="Search Girl's birthplace">
+                                    <div class="suggestions" id="g-suggest-match"></div>
+                                </div>
+                                <div class="input-group"><label>Date</label><input type="date" id="g-dob-match"
+                                        value="1995-01-01"></div>
+                                <div class="input-group"><label>Time</label><input type="time" id="g-tob-match"
+                                        value="12:00:00" step="1"></div>
+                                <input type="hidden" id="g-lat-match" value="13.1"><input type="hidden" id="g-lng-match"
+                                    value="80.2">
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn-primary" style="width:100%; margin-top:30px;" onclick="calculatePorutham()">Check
+                        Compatibility</button>
+
+                    <div id="match-results-box"
+                        style="display:none; margin-top:30px; border-top:1px solid #eee; padding-top:20px;">
+                        <h2 id="match-score-text" style="text-align:center; font-size:2rem; margin-bottom:20px;"></h2>
+                        <div id="match-details-grid" class="grid-vargas"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
         let globalData = null;
-        let currentVarga = 'D1';
         const SIGN_MAP = [[0, 0, 11], [1, 0, 0], [2, 0, 1], [3, 0, 2], [3, 1, 3], [3, 2, 4], [3, 3, 5], [2, 3, 6], [1, 3, 7], [0, 3, 8], [0, 2, 9], [0, 1, 10]];
-        const SIGN_NAMES_EN = ["Ar", "Ta", "Ge", "Cn", "Le", "Vi", "Li", "Sc", "Sg", "Cp", "Aq", "Pi"];
-        const NAKSHATRAS = ["Ashwini", "Bharani", "Krittika", "Rohini", "Mrigashira", "Ardra", "Punarvasu", "Pushya", "Ashlesha", "Magha", "P.Phalguni", "U.Phalguni", "Hasta", "Chitra", "Swati", "Vishakha", "Anuradha", "Jyeshtha", "Mula", "P.Ashada", "U.Ashada", "Shravana", "Dhanishta", "Shatabhisha", "P.Bhadra", "U.Bhadra", "Revati"];
+        const SIGN_NAMES_SHORT = ["Ar", "Ta", "Ge", "Cn", "Le", "Vi", "Li", "Sc", "Sg", "Cp", "Aq", "Pi"];
 
-        // Initialize Matching Selects
-        const nakSelects = [document.getElementById('boy-nak'), document.getElementById('girl-nak')];
-        const rasiSelects = [document.getElementById('boy-rasi'), document.getElementById('girl-rasi')];
-        nakSelects.forEach(sel => NAKSHATRAS.forEach((n, i) => sel.innerHTML += `<option value="${i}">${n}</option>`));
-        ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"].forEach((s, i) => {
-            rasiSelects.forEach(sel => sel.innerHTML += `<option value="${i}">${s}</option>`);
-        });
-
-        function showMainTab(tab) {
-            document.getElementById('personal-tab').style.display = tab === 'personal' ? 'block' : 'none';
-            document.getElementById('matching-tab').style.display = tab === 'matching' ? 'block' : 'none';
-            if (tab === 'matching') document.getElementById('results').style.display = 'none';
-
-            const mainTabs = document.querySelector('.container > .tabs').children;
-            mainTabs[0].classList.toggle('active', tab === 'personal');
-            mainTabs[1].classList.toggle('active', tab === 'matching');
+        function switchScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('s-' + id).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.querySelector(`[onclick="switchScreen('${id}')"]`).classList.add('active');
+            document.getElementById('screen-title').textContent = document.querySelector('.nav-item.active').textContent;
+            // Hide global input for matching screen to save space
+            document.getElementById('global-input').style.display = id === 'matching' ? 'none' : 'block';
         }
 
-        async function runMatching() {
+        async function calculateAll() {
+            showLoader(true);
             const payload = {
-                boyNak: document.getElementById('boy-nak').value,
-                girlNak: document.getElementById('girl-nak').value,
-                boySign: document.getElementById('boy-rasi').value,
-                girlSign: document.getElementById('girl-rasi').value
-            };
-            const res = await fetch('/api/porutham', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-            const { match } = await res.json();
-
-            if (match) {
-                const resultsDiv = document.getElementById('match-results');
-                resultsDiv.style.display = 'block';
-                document.getElementById('match-score-display').textContent = `Total Score: ${match.totalScore} / ${match.maxTotal}`;
-
-                let detailsHtml = '';
-                match.matches.forEach(m => {
-                    const status = m.score > 0 ? '✔️' : '❌';
-                    detailsHtml += `
-                    <div style="background:#f9f9f9; padding:15px; border-radius:12px; border:1px solid #eee;">
-                        <h4 style="margin-bottom:8px; display:flex; justify-content:space-between; font-size:0.9rem;">
-                            <span>${m.name}</span> <span>${status}</span>
-                        </h4>
-                        <div style="font-size:0.75rem; color:#666; font-weight:700;">Score: ${m.score}/${m.maxScore}</div>
-                        <p style="font-size:0.7rem; color:#888; margin-top:5px;">${m.description}</p>
-                    </div>`;
-                });
-                document.getElementById('match-details').innerHTML = detailsHtml;
-                resultsDiv.scrollIntoView({ behavior: 'smooth' });
-            }
-        }
-
-        async function calculate() {
-            document.getElementById('loader').style.display = 'flex';
-            const payload = {
-                dateString: document.getElementById('dob').value,
-                timeString: document.getElementById('tob').value,
-                lat: document.getElementById('lat').value,
-                lng: document.getElementById('lng').value,
-                timezone: document.getElementById('timezone').value,
+                dateString: document.getElementById('g-dob').value,
+                timeString: document.getElementById('g-tob').value,
+                lat: document.getElementById('g-lat').value,
+                lng: document.getElementById('g-lng').value,
+                timezone: document.getElementById('g-tz').value,
                 ayanamsha: 1
             };
             try {
                 const res = await fetch('/calculate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                 const result = await res.json();
-
-                if (!result.success) {
-                    alert("Server Error: " + result.error);
-                    document.getElementById('loader').style.display = 'none';
-                    return;
-                }
-
+                if (!result.success) throw new Error(result.error);
                 globalData = result.data;
-                document.getElementById('header-text').textContent = `Professional Chart - ${payload.dateString} ${payload.timeString} | ${document.getElementById('place-search').value}`;
                 renderAll();
-                document.getElementById('results').style.display = 'block';
-                window.scrollTo({ top: document.getElementById('results').offsetTop - 50, behavior: 'smooth' });
-            } catch (e) {
-                alert("Application Error: " + e.message);
-            }
-            document.getElementById('loader').style.display = 'none';
+            } catch (e) { alert(e.message); }
+            showLoader(false);
         }
 
         function renderAll() {
-            renderPlanetTable();
-            drawChart();
-            renderActiveDasha();
+            renderPlanets();
+            renderPanchanga();
+            drawChart('chart-d1', 'D1');
+            renderVargas();
+            renderDashas();
+            renderJaiminiKP();
+            renderAnalytics();
         }
 
-        function renderPlanetTable() {
-            const body = document.getElementById('p-table-body');
-            body.innerHTML = '';
+        function renderPlanets() {
+            const div = document.getElementById('planet-data');
+            let html = '<table><thead><tr><th>Planet</th><th>Sign</th><th>Nakshatra</th><th>Deg</th></tr></thead><tbody>';
             Object.entries(globalData.planets).forEach(([name, d]) => {
-                const tr = document.createElement('tr');
-                const deg = Math.floor(d.longitude % 30);
-                const min = Math.floor(((d.longitude % 30) - deg) * 60);
-                const statusClass = `status-${d.dignity.toLowerCase().replace(' ', '-')}`;
-
-                tr.innerHTML = `
-                <td><strong>${d.nameTamil}</strong> <br><small style="color:#888">${name}</small></td>
-                <td>${d.signTamil} <br><small style="color:#888">(${d.sign})</small></td>
-                <td>${d.nakshatra.name}</td>
-                <td>${d.nakshatra.lord}</td>
-                <td>${d.nakshatra.pada}</td>
-                <td><span class="status-tag ${statusClass}">${d.dignityTamil || d.dignity}</span></td>
-                <td>${deg}° ${min}'</td>
-            `;
-                body.appendChild(tr);
+                html += `<tr><td>${d.nameTamil}</td><td>${d.signTamil}</td><td>${d.nakshatra.name}</td><td>${(d.longitude % 30).toFixed(2)}°</td></tr>`;
             });
+            div.innerHTML = html + '</tbody></table>';
         }
 
-        function drawChart() {
-            const chartData = globalData.vargas[currentVarga];
-            const container = document.getElementById('si-grid');
-            container.innerHTML = `<div class="si-center"><span>${currentVarga === 'D1' ? 'RASI' : (currentVarga === 'D9' ? 'D9' : 'D10')}</span></div>`;
+        function renderPanchanga() {
+            const p = globalData.panchanga;
+            const div = document.getElementById('panchanga-data');
+            const row = (l, v) => `<div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #f1f5f9;"><span style="color:var(--text-light)">${l}</span><span style="font-weight:700">${v}</span></div>`;
+            div.innerHTML = `
+            ${row('Tithi', p.tithi.name)}
+            ${row('Nakshatram', p.nakshatra.name)}
+            ${row('Yogam', p.yoga.name)}
+            ${row('Karanam', p.karana.name)}
+            ${row('Vara', p.vara.name)}
+        `;
+        }
+
+        function drawChart(containerId, vargaKey) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = `<div class="cell-center">${vargaKey}</div>`;
+            const data = globalData.vargas[vargaKey];
 
             SIGN_MAP.forEach(([x, y, sid]) => {
                 const cell = document.createElement('div');
-                cell.className = 'si-cell';
+                cell.className = 'cell';
                 cell.style.gridColumn = x + 1; cell.style.gridRow = y + 1;
-                cell.setAttribute('data-sign', sid);
+                cell.setAttribute('data-sign', SIGN_NAMES_SHORT[sid]);
 
-                Object.entries(chartData).forEach(([pName, pVal]) => {
+                Object.entries(data).forEach(([pName, pVal]) => {
                     if (pVal.signIdx === sid) {
                         const span = document.createElement('span');
-                        span.className = 'planet-icon' + (pName === 'Ascendant' ? ' asc' : '');
-                        const tamilName = globalData.tamilData.planets[pName] || 'ல';
-                        span.textContent = pName === 'Ascendant' ? 'ல' : tamilName.substring(0, 2);
+                        span.className = 'p-tag' + (pName === 'Ascendant' ? ' asc' : '');
+                        span.textContent = pName === 'Ascendant' ? 'LA' : (globalData.tamilData.planets[pName]?.substring(0, 2) || pName.substring(0, 2));
                         cell.appendChild(span);
                     }
                 });
@@ -651,67 +565,115 @@
             });
         }
 
-        function switchVarga(e, v) {
-            currentVarga = v;
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            e.target.classList.add('active');
-            drawChart();
-        }
-
-        function renderActiveDasha() {
-            const now = new Date();
-            const activeArea = document.getElementById('dasha-active-area');
-            activeArea.innerHTML = '<h3>Current Active Dasha</h3>';
-
-            const tree = globalData.dashas;
-            if (!tree || !tree.length) return;
-
-            for (const m of tree) {
-                const end = new Date(m.end);
-                if (end > now) {
-                    let html = `<div class="dasha-active">
-                        <div style="font-weight:800; color:var(--p-1); margin-bottom:10px;">Current Mahadasha: ${m.planet}</div>
-                        <div style="font-size:0.9rem">Ends on: ${end.toLocaleDateString()}</div>`;
-
-                    if (m.subPeriods) {
-                        for (const a of m.subPeriods) {
-                            const aEnd = new Date(a.end);
-                            if (aEnd > now) {
-                                html += `<div style="font-weight:700; color:var(--p-2); margin-top:10px;">Antardasha (Bhukti): ${a.planet}</div>
-                                         <div style="font-size:0.8rem">Ends on: ${aEnd.toLocaleDateString()}</div>`;
-                                break;
-                            }
-                        }
-                    }
-                    html += `</div>`;
-                    activeArea.innerHTML += html;
-                    break;
-                }
-            }
-        }
-
-        const searchInput = document.getElementById('place-search');
-        const suggestList = document.getElementById('suggestions');
-
-        searchInput.addEventListener('input', async (e) => {
-            if (e.target.value.length < 3) return;
-            const res = await fetch(`/api/search-place?q=${e.target.value}`);
-            const data = await res.json();
-            suggestList.innerHTML = '';
-            suggestList.style.display = 'block';
-            data.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'suggest-item';
-                div.textContent = item.display_name;
-                div.onclick = () => {
-                    document.getElementById('lat').value = item.lat;
-                    document.getElementById('lng').value = item.lon;
-                    searchInput.value = item.display_name;
-                    suggestList.style.display = 'none';
-                };
-                suggestList.appendChild(div);
+        function renderVargas() {
+            const grid = document.getElementById('varga-grid');
+            grid.innerHTML = '';
+            Object.keys(globalData.vargas).forEach(vk => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `<h4 style="margin-bottom:10px; font-size:0.8rem;">${vk}</h4><div class="chart-box" id="chart-${vk}" style="width:100%; height:auto;"></div>`;
+                grid.appendChild(card);
+                drawChart(`chart-${vk}`, vk);
             });
-        });
+        }
+
+        function renderDashas() {
+            const div = document.getElementById('dasha-tree');
+            let html = '';
+            globalData.dashas.vimshottari.slice(0, 10).forEach(m => {
+                const isNow = new Date(m.end) > new Date();
+                html += `<div style="padding:15px; border-left:4px solid ${isNow ? 'var(--primary)' : '#eee'}; margin-bottom:10px; background:${isNow ? 'var(--primary-light)' : 'transparent'}">
+                <strong>${m.planet} Mahadasha</strong> <span style="font-size:0.8rem; color:#666">until ${new Date(m.end).toLocaleDateString()}</span>
+            </div>`;
+            });
+            div.innerHTML = html;
+        }
+
+        function renderJaiminiKP() {
+            const j = globalData.jaimini;
+            const jDiv = document.getElementById('jaimini-data');
+            let jHtml = '<table><thead><tr><th>Karaka</th><th>Planet</th></tr></thead><tbody>';
+            j.forEach(item => {
+                jHtml += `<tr><td>${item.karaka}</td><td>${globalData.planets[Object.keys(globalData.planets).find(k => globalData.planets[k].id === item.planetId)]?.nameTamil}</td></tr>`;
+            });
+            jDiv.innerHTML = jHtml + '</tbody></table>';
+
+            const kDiv = document.getElementById('kp-data');
+            let kHtml = '<table><thead><tr><th>Planet</th><th>Sign Lord</th><th>Star Lord</th><th>Sub Lord</th><th>Sub-Sub</th></tr></thead><tbody>';
+            Object.entries(globalData.planets).forEach(([pName, p]) => {
+                kHtml += `<tr><td>${p.id === 99 ? 'Ketu' : p.nameTamil}</td><td>${p.kp.signLord}</td><td>${p.kp.starLord}</td><td>${p.kp.subLord}</td><td>${p.kp.subSubLord}</td></tr>`;
+            });
+            kDiv.innerHTML = kHtml + '</tbody></table>';
+        }
+
+        function renderAnalytics() {
+            const sDiv = document.getElementById('shadbala-data');
+            let sHtml = '<table><thead><tr><th>Planet</th><th>Points</th></tr></thead><tbody>';
+            Object.entries(globalData.shadbala).forEach(([n, v]) => {
+                sHtml += `<tr><td>${globalData.planets[n].nameTamil}</td><td>${v.toFixed(2)}</td></tr>`;
+            });
+            sDiv.innerHTML = sHtml + '</tbody></table>';
+
+            const yDiv = document.getElementById('yoga-data');
+            let yHtml = '';
+            globalData.yogas.forEach(y => {
+                yHtml += `<div class="card" style="margin-bottom:10px; padding:15px;"><h4 style="color:var(--primary); font-size:0.9rem;">${y.name}</h4><p style="font-size:0.8rem; color:#666">${y.description}</p></div>`;
+            });
+            yDiv.innerHTML = yHtml || 'No prominent yogas detected';
+        }
+
+        async function calculatePorutham() {
+            showLoader(true);
+            const payload = {
+                boy: { dateString: document.getElementById('b-dob').value, timeString: document.getElementById('b-tob').value, lat: document.getElementById('b-lat').value, lng: document.getElementById('b-lng').value, timezone: 5.5 },
+                girl: { dateString: document.getElementById('g-dob-match').value, timeString: document.getElementById('g-tob-match').value, lat: document.getElementById('g-lat-match').value, lng: document.getElementById('g-lng-match').value, timezone: 5.5 },
+                ayanamsha: 1
+            };
+            const res = await fetch('/api/porutham-birth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            const result = await res.json();
+
+            const box = document.getElementById('match-results-box');
+            box.style.display = 'block';
+            document.getElementById('match-score-text').textContent = `Total Score: ${result.match.totalScore} / ${result.match.maxTotal}`;
+
+            let html = '';
+            result.match.matches.forEach(m => {
+                html += `<div class="card">
+                <div style="display:flex; justify-content:space-between;"><strong>${m.name}</strong> <span>${m.score > 0 ? '✔️' : '❌'}</span></div>
+                <div style="font-size:0.75rem; color:#666; margin-top:5px;">Score: ${m.score}/${m.maxScore}</div>
+            </div>`;
+            });
+            document.getElementById('match-details-grid').innerHTML = html;
+            showLoader(false);
+        }
+
+        // Helper: Suggest Box Utility
+        function setupSuggest(inputId, listId, latId, lngId) {
+            document.getElementById(inputId).addEventListener('input', async (e) => {
+                if (e.target.value.length < 3) return;
+                const res = await fetch(`/api/search-place?q=${e.target.value}`);
+                const data = await res.json();
+                const list = document.getElementById(listId);
+                list.innerHTML = ''; list.style.display = 'block';
+                data.forEach(item => {
+                    const div = document.createElement('div'); div.className = 'suggest-item';
+                    div.textContent = item.display_name;
+                    div.onclick = () => {
+                        document.getElementById(latId).value = item.lat;
+                        document.getElementById(lngId).value = item.lon;
+                        document.getElementById(inputId).value = item.display_name;
+                        list.style.display = 'none';
+                    };
+                    list.appendChild(div);
+                });
+            });
+        }
+
+        setupSuggest('g-place', 'g-suggest', 'g-lat', 'g-lng');
+        setupSuggest('b-place', 'b-suggest', 'b-lat', 'b-lng');
+        setupSuggest('g-place-match', 'g-suggest-match', 'g-lat-match', 'g-lng-match');
+
+        function showLoader(s) { document.getElementById('loader').style.display = s ? 'flex' : 'none'; }
     </script>
 
 </body>
