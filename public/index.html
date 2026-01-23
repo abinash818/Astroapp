@@ -622,18 +622,30 @@
 
         function drawWheel(cId, vKey) {
             const box = document.getElementById(cId);
-            box.innerHTML = `<div class="cell-core">${vKey}</div>`;
+            if (!box || !gData.vargas[vKey]) return;
+            box.innerHTML = `<div class="cell-core" style="color:var(--secondary); text-shadow: 0 0 15px var(--secondary-glow);">${vKey}</div>`;
             const data = gData.vargas[vKey];
+            const P_COLORS = {
+                'Sun': '#fbbf24', 'Moon': '#f8fafc', 'Mars': '#ef4444',
+                'Mercury': '#10b981', 'Jupiter': '#f59e0b', 'Venus': '#ec4899',
+                'Saturn': '#64748b', 'Rahu': '#8b5cf6', 'Ketu': '#6366f1', 'Ascendant': '#f472b6'
+            };
+
             S_MAP.forEach(([x, y, sid]) => {
                 const cell = document.createElement('div');
                 cell.className = 'cell';
                 cell.style.gridColumn = x + 1; cell.style.gridRow = y + 1;
                 cell.setAttribute('data-sign', S_NAMES[sid]);
                 Object.entries(data).forEach(([pName, pVal]) => {
-                    if (pVal.signIdx === sid) {
+                    if (parseInt(pVal.signIdx) === parseInt(sid)) {
                         const el = document.createElement('span');
-                        el.className = 'p-unit' + (pName === 'Ascendant' ? ' asc' : '');
-                        el.textContent = pName === 'Ascendant' ? 'LA' : (gData.tamilData.planets[pName]?.substring(0, 2) || pName.substring(0, 2));
+                        const isAsc = pName === 'Ascendant' || pName === 'Lagna';
+                        el.className = 'p-unit' + (isAsc ? ' asc' : '');
+                        const baseColor = P_COLORS[pName] || '#818cf8';
+                        el.style.color = isAsc ? '#f472b6' : baseColor;
+                        el.style.textShadow = `0 0 8px ${baseColor}66`;
+                        const tamilName = gData.tamilData.planets[pName] || pName;
+                        el.textContent = isAsc ? 'ல' : tamilName.substring(0, 2);
                         cell.appendChild(el);
                     }
                 });
@@ -699,18 +711,34 @@
             const res = await fetch('/api/porutham-birth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(p) });
             const result = await res.json();
 
-            document.getElementById('mat-res').style.display = 'block';
-            document.getElementById('mat-scr').textContent = `${((result.match.totalScore / result.match.maxTotal) * 100).toFixed(0)}%`;
+            if (!result.success) { alert(result.error); showPulse(false); return; }
+
+            const box = document.getElementById('mat-res');
+            box.style.display = 'block';
+            const scorePct = ((result.match.totalScore / result.match.maxTotal) * 100).toFixed(0);
+            const scoreEl = document.getElementById('mat-scr');
+            scoreEl.textContent = `${scorePct}%`;
+
+            // Dynamic color based on score
+            if (scorePct >= 70) scoreEl.style.backgroundImage = 'linear-gradient(to right, #10b981, #34d399)';
+            else if (scorePct >= 50) scoreEl.style.backgroundImage = 'linear-gradient(to right, #f59e0b, #fbbf24)';
+            else scoreEl.style.backgroundImage = 'linear-gradient(to right, #ef4444, #f87171)';
 
             let html = '';
             result.match.matches.forEach(m => {
-                html += `<div class="glass-card">
-                <div style="display:flex; justify-content:space-between;"><strong>${m.name}</strong> <span style="color:${m.score > 0 ? 'var(--primary)' : 'var(--error)'}">${m.score > 0 ? '✓' : '✗'}</span></div>
-                <div style="font-size:0.7rem; color:var(--text-dim); margin-top:5px;">Points: ${m.score}/${m.maxScore}</div>
-            </div>`;
+                const isGood = m.score > 0;
+                html += `<div class="glass-card" style="border-left: 4px solid ${isGood ? '#10b981' : '#ef4444'}">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <strong style="color:#fff; font-size:1rem;">${m.name}</strong> 
+                        <span style="font-size:1.2rem; filter: drop-shadow(0 0 5px ${isGood ? '#10b98166' : '#ef444466'})">${isGood ? '✨' : '⚠️'}</span>
+                    </div>
+                    <div style="font-size:0.75rem; color:var(--text-dim); margin-top:8px;">${m.description}</div>
+                    <div style="font-size:0.8rem; font-weight:800; color:${isGood ? '#10b981' : '#f87171'}; margin-top:10px;">${m.score} / ${m.maxScore} Points</div>
+                </div>`;
             });
             document.getElementById('mat-det').innerHTML = html;
             showPulse(false);
+            box.scrollIntoView({ behavior: 'smooth' });
         }
 
         function linkSuggest(i, l, lt, ln) {

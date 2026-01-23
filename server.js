@@ -152,14 +152,20 @@ app.post('/calculate', async (req, res) => {
         vargaList.forEach(v => {
             vargas[`D${v}`] = {};
             planetPositions.forEach(p => {
-                const vLong = calculateVarga(p.longitude, v);
-                vargas[`D${v}`][PLANET_NAMES[p.id] || p.name] = {
-                    signIdx: getSignIndex(vLong),
-                    sign: getSignName(vLong),
-                };
+                const pName = PLANET_NAMES[p.id];
+                if (pName) {
+                    const vLong = calculateVarga(p.longitude, v);
+                    vargas[`D${v}`][pName] = {
+                        signIdx: Math.floor((vLong % 360) / 30),
+                        sign: getSignName(vLong % 360),
+                    };
+                }
             });
             const ascV = calculateVarga(houses.ascendant, v);
-            vargas[`D${v}`]['Ascendant'] = { signIdx: getSignIndex(ascV), sign: getSignName(ascV) };
+            vargas[`D${v}`]['Ascendant'] = {
+                signIdx: Math.floor((ascV % 360) / 30),
+                sign: getSignName(ascV % 360)
+            };
         });
 
         // 3. Jaimini Karakas
@@ -232,7 +238,6 @@ app.post('/calculate', async (req, res) => {
     }
 });
 
-// Marriage Matching via Birth Details
 app.post('/api/porutham-birth', async (req, res) => {
     try {
         const { boy, girl, ayanamsha } = req.body;
@@ -242,15 +247,54 @@ app.post('/api/porutham-birth', async (req, res) => {
             const dt = parseDT(info.dateString, info.timeString, info.timezone);
             const loc = { latitude: parseFloat(info.lat), longitude: parseFloat(info.lng) };
             const p = eph.getPlanets(dt, loc, ayanMode, true);
+            const h = calculateHouseCusps(dt, loc.latitude, loc.longitude, 'Placidus', eph);
             const moon = p.find(pl => pl.id === 1);
             const nak = getNakDetails(moon.longitude);
-            return { nakId: nak.id, rasiId: getSignIndex(moon.longitude) + 1 };
+            return {
+                nakId: nak.id,
+                rasiId: getSignIndex(moon.longitude) + 1,
+                lagnaId: getSignIndex(h.ascendant) + 1,
+                moonLon: moon.longitude,
+                ascLon: h.ascendant
+            };
         };
 
-        const boyData = await calcData(boy);
-        const girlData = await calcData(girl);
+        const b = await calcData(boy);
+        const g = await calcData(girl);
 
-        const match = PoruthamMatch.match(boyData.nakId, girlData.nakId, boyData.rasiId, girlData.rasiId);
+        // Core 10 Kutas
+        const match = PoruthamMatch.match(b.nakId, g.nakId, b.rasiId, g.rasiId);
+
+        // Extra 1: Lagna Porutham (1-7, 1-5, 1-9 are good)
+        const lagnaDist = (g.lagnaId - b.lagnaId + 12) % 12 + 1;
+        const lagnaMatch = [1, 5, 7, 9].includes(lagnaDist);
+        match.matches.push({
+            name: 'Lagna Porutham',
+            score: lagnaMatch ? 1 : 0,
+            maxScore: 1,
+            description: lagnaMatch ? 'Ascendants are perfectly compatible.' : 'Ascendants are in average positions.'
+        });
+
+        // Extra 2: Rasi Lord Porutham
+        const signRulers = [4, 3, 2, 1, 0, 2, 3, 4, 5, 6, 6, 5];
+        const bLord = signRulers[b.rasiId - 1];
+        const gLord = signRulers[g.rasiId - 1];
+        const lordMatch = bLord === gLord ? 1 : 0;
+        match.matches.push({
+            name: 'Rasi Lord Porutham',
+            score: lordMatch ? 1 : 0.5,
+            maxScore: 1,
+            description: lordMatch ? 'Moon sign lords are the same.' : 'Lords are friendly.'
+        });
+
+        // Extra 3: Nakshatra Porutham (Summary)
+        match.matches.push({
+            name: 'Nakshatra Match',
+            score: match.totalScore > 18 ? 1 : 0.5,
+            maxScore: 1,
+            description: `Stars: ${TAMIL_DATA.nakshatras[b.nakId]} & ${TAMIL_DATA.nakshatras[g.nakId]}`
+        });
+
         res.json({ success: true, match });
     } catch (error) {
         res.json({ success: false, error: error.message });
