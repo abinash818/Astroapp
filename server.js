@@ -92,12 +92,22 @@ app.post('/calculate', async (req, res) => {
     try {
         const { dateString, timeString, lat, lng, timezone, ayanamsha } = req.body;
 
-        // Parse into Luxon DateTime
-        // dateString: YYYY-MM-DD
-        // timeString: HH:mm:ss
         const [year, month, day] = dateString.split('-').map(Number);
         const [hour, min, sec] = timeString.split(':').map(Number);
-        const dt = DateTime.fromObject({ year, month, day, hour, minute: min, second: sec }, { zone: `UTC${parseFloat(timezone) >= 0 ? '+' : ''}${parseFloat(timezone)}` });
+
+        // Fix: Luxon expects UTC+HH:mm, not UTC+5.5
+        const tzFloat = parseFloat(timezone);
+        const tzSign = tzFloat >= 0 ? '+' : '-';
+        const tzAbs = Math.abs(tzFloat);
+        const tzH = Math.floor(tzAbs);
+        const tzM = Math.round((tzAbs - tzH) * 60);
+        const zoneStr = `UTC${tzSign}${String(tzH).padStart(2, '0')}:${String(tzM).padStart(2, '0')}`;
+
+        const dt = DateTime.fromObject({ year, month, day, hour, minute: min, second: sec }, { zone: zoneStr });
+
+        if (!dt.isValid) {
+            throw new Error("Invalid Date/Time or Timezone provided.");
+        }
 
         const location = { latitude: parseFloat(lat), longitude: parseFloat(lng) };
         const ayanMode = parseInt(ayanamsha) || 1;

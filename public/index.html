@@ -474,13 +474,21 @@
             try {
                 const res = await fetch('/calculate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                 const result = await res.json();
-                globalData = result.data;
 
+                if (!result.success) {
+                    alert("Server Error: " + result.error);
+                    document.getElementById('loader').style.display = 'none';
+                    return;
+                }
+
+                globalData = result.data;
                 document.getElementById('header-text').textContent = `Professional Chart - ${payload.dateString} ${payload.timeString} | ${document.getElementById('place-search').value}`;
                 renderAll();
                 document.getElementById('results').style.display = 'block';
                 window.scrollTo({ top: document.getElementById('results').offsetTop - 50, behavior: 'smooth' });
-            } catch (e) { alert("Error: " + e.message); }
+            } catch (e) {
+                alert("Application Error: " + e.message);
+            }
             document.getElementById('loader').style.display = 'none';
         }
 
@@ -497,7 +505,6 @@
                 const tr = document.createElement('tr');
                 const deg = Math.floor(d.longitude % 30);
                 const min = Math.floor(((d.longitude % 30) - deg) * 60);
-
                 const statusClass = `status-${d.dignity.toLowerCase().replace(' ', '-')}`;
 
                 tr.innerHTML = `
@@ -523,14 +530,13 @@
                 cell.className = 'si-cell';
                 cell.style.gridColumn = x + 1; cell.style.gridRow = y + 1;
                 cell.setAttribute('data-sign', SIGN_NAMES_EN[sid]);
-
-                // Fix: Add planets by sign logic
                 Object.entries(chartData).forEach(([pName, pVal]) => {
                     const pSignIdx = SIGN_NAMES_EN.indexOf(pVal.sign.substring(0, 2));
                     if (pSignIdx === sid) {
                         const span = document.createElement('span');
                         span.className = 'planet-icon' + (pName === 'Ascendant' ? ' asc' : '');
-                        span.textContent = pName === 'Ascendant' ? 'ல' : globalData.tamilData.planets[pName].substring(0, 2);
+                        const tamilName = globalData.tamilData.planets[pName] || 'ல';
+                        span.textContent = pName === 'Ascendant' ? 'ல' : tamilName.substring(0, 2);
                         cell.appendChild(span);
                     }
                 });
@@ -546,26 +552,28 @@
         }
 
         function renderActiveDasha() {
-            // Simple Dasha Highlight for Demo
             const now = new Date();
             const activeArea = document.getElementById('dasha-active-area');
             activeArea.innerHTML = '<h3>Current Active Dasha</h3>';
 
-            // Finding active dasha from tree
             const tree = globalData.dashas;
+            if (!tree || !tree.length) return;
+
             for (const m of tree) {
-                const end = new Date(m.endDate);
+                const end = new Date(m.end);
                 if (end > now) {
                     let html = `<div class="dasha-active">
-                    <div style="font-weight:800; color:var(--p-1); margin-bottom:10px;">Current Mahadasha: ${m.lord}</div>
-                    <div style="font-size:0.9rem">Ends on: ${end.toLocaleDateString()}</div>`;
+                        <div style="font-weight:800; color:var(--p-1); margin-bottom:10px;">Current Mahadasha: ${m.planet}</div>
+                        <div style="font-size:0.9rem">Ends on: ${end.toLocaleDateString()}</div>`;
 
-                    for (const a of m.antardashas) {
-                        const aEnd = new Date(a.endDate);
-                        if (aEnd > now) {
-                            html += `<div style="font-weight:700; color:var(--p-2); margin-top:10px;">Antardasha (Bhukti): ${a.lord}</div>
-                                 <div style="font-size:0.8rem">Ends on: ${aEnd.toLocaleDateString()}</div>`;
-                            break;
+                    if (m.subPeriods) {
+                        for (const a of m.subPeriods) {
+                            const aEnd = new Date(a.end);
+                            if (aEnd > now) {
+                                html += `<div style="font-weight:700; color:var(--p-2); margin-top:10px;">Antardasha (Bhukti): ${a.planet}</div>
+                                         <div style="font-size:0.8rem">Ends on: ${aEnd.toLocaleDateString()}</div>`;
+                                break;
+                            }
                         }
                     }
                     html += `</div>`;
@@ -575,7 +583,6 @@
             }
         }
 
-        // Geocoding Proxy logic
         const searchInput = document.getElementById('place-search');
         const suggestList = document.getElementById('suggestions');
 
