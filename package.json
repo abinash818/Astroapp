@@ -10,12 +10,18 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "dependencies": {
+    "@node-jhora/analytics": "^1.5.0",
+    "@node-jhora/core": "^1.5.0",
+    "@node-jhora/match": "^1.5.0",
+    "@node-jhora/prediction": "^1.5.0",
     "axios": "^1.13.2",
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "jyotish-calc": "^1.3.3",
-    "moment-timezone": "^0.6.0"
+    "luxon": "^3.7.2",
+    "moment-timezone": "^0.6.0",
+    "node-jhora-monorepo": "^1.0.0"
   }
 }

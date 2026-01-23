@@ -1,9 +1,15 @@
-const express = require('express');
-const cors = require('cors');
-const jyotish = require('jyotish-calc');
-const moment = require('moment-timezone');
-const axios = require('axios');
+import express from 'express';
+import cors from 'cors';
+import axios from 'axios';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { DateTime } from 'luxon';
+import { EphemerisEngine, KPSubLord, calculatePanchanga, calculateVarga, calculateHouseCusps } from '@node-jhora/core';
+import { PoruthamMatch } from '@node-jhora/match';
+// Importing these for hierarchical calculation logic if needed, but we used core functional exports
+import { generateVimshottari } from '@node-jhora/prediction';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -11,21 +17,33 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
-const getSignDegree = (long) => {
-    const sign = Math.floor(long / 30);
-    const deg = long % 30;
-    return [sign, deg];
+// 1. Initialize Astrology Engine
+const eph = EphemerisEngine.getInstance();
+await eph.initialize();
+
+const PLANET_NAMES = {
+    0: 'Sun', 1: 'Moon', 2: 'Mercury', 3: 'Venus', 4: 'Mars',
+    5: 'Jupiter', 6: 'Saturn', 11: 'Rahu', 99: 'Ketu'
+};
+
+const getSignName = (lon) => {
+    const signs = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
+    return signs[Math.floor(lon / 30)];
+};
+
+const getLordName = (id) => {
+    // KP SubLord uses: 0:Sun, 1:Mon, 2:Mer, 3:Ven, 4:Mar, 5:Jup, 6:Sat, 7:Rah, 8:Ket
+    const names = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Rahu", "Ketu"];
+    return names[id];
 };
 
 // Geocoding Proxy (Prioritize India)
 app.get('/api/search-place', async (req, res) => {
     try {
         const query = req.query.q;
-        // Added countrycodes=in to prioritize India as requested
         const response = await axios.get(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=10&countrycodes=in`, {
             headers: { 'User-Agent': 'AstroApp/1.0' }
         });
-        // Filter out results without lat/lon
         const filtered = response.data.filter(item => item.lat && item.lon);
         res.json(filtered);
     } catch (error) {
@@ -33,122 +51,116 @@ app.get('/api/search-place', async (req, res) => {
     }
 });
 
-// Helper for Tamil Date Correction (Ensuring Thai 1 is Jan 15, 2026)
-const getCorrectedTamilDate = (panchanga, lat, lng, timezone) => {
-    const jd = panchanga.julianDay;
-    const place = { latitude: lat, longitude: lng, timezone: timezone };
-
-    // Get standard calculation
-    let tc = jyotish.panchanga.tamilSolarMonthAndDate(jd, place);
-
-    // Tamil Date Logic Fix:
-    // If Sankranti happens after sunset, the month starts the next day.
-    // We check the Sun's longitude at the time of calculation.
-    const sunLong = panchanga.solarMonth.sunLongitude;
-    const currentSign = Math.floor(sunLong / 30);
-
-    // Find when the Sun actually entered this sign
-    const sankranti = jyotish.panchanga.previousSankranti(jd, place, currentSign);
-
-    if (sankranti) {
-        const sunset = jyotish.panchanga.sunset(sankranti.jd, place);
-        // If Sankranti happened after sunset on that day, the month begins on the NEXT day.
-        let monthStartJD = sankranti.jd;
-        if (sankranti.time > sunset.hours) {
-            monthStartJD += 1;
-        }
-
-        // Tamil Date is current JD - monthStartJD + 1
-        const tamilDate = Math.floor(jd - monthStartJD) + 1;
-
-        if (tamilDate > 0) {
-            tc.date = tamilDate;
-        }
-    }
-
-    return tc;
-};
-
-app.post('/calculate', (req, res) => {
+// Main Calculation
+app.post('/calculate', async (req, res) => {
     try {
-        const body = { ...req.body };
-        const ayanamsha = parseInt(body.ayanamsha) || 1;
+        const { dateString, timeString, lat, lng, timezone, ayanamsha } = req.body;
 
-        const lat = parseFloat(body.lat);
-        const lng = parseFloat(body.lng);
-        const timezone = parseFloat(body.timezone);
+        // Parse into Luxon DateTime
+        // dateString: YYYY-MM-DD
+        // timeString: HH:mm:ss
+        const [year, month, day] = dateString.split('-').map(Number);
+        const [hour, min, sec] = timeString.split(':').map(Number);
+        const dt = DateTime.fromObject({ year, month, day, hour, minute: min, second: sec }, { zone: `UTC${parseFloat(timezone) >= 0 ? '+' : ''}${parseFloat(timezone)}` });
 
-        let birthData = { ...body, lat, lng, timezone };
+        const location = { latitude: parseFloat(lat), longitude: parseFloat(lng) };
+        const ayanMode = parseInt(ayanamsha) || 1;
 
-        if (body.dateString) {
-            const [y, m, d] = body.dateString.split('-').map(Number);
-            const [h, min, s] = (body.timeString || "00:00:00").split(':').map(Number);
-            birthData = { ...birthData, year: y, month: m, date: d, hour: h, min, sec: s };
-        }
+        // 1. Get Planets
+        const planetPositions = eph.getPlanets(dt, location, ayanMode, true);
+        const results = {};
 
-        const grahas = jyotish.grahas.getGrahasPosition(birthData, { ayanamsha });
-        const panchanga = jyotish.panchanga.calculatePanchanga(birthData);
+        planetPositions.forEach(p => {
+            if (PLANET_NAMES[p.id]) {
+                const kp = KPSubLord.calculateKPSignificators(p.longitude);
+                results[PLANET_NAMES[p.id]] = {
+                    longitude: p.longitude,
+                    sign: getSignName(p.longitude),
+                    kp: {
+                        signLord: getLordName(kp.signLord),
+                        starLord: getLordName(kp.starLord),
+                        subLord: getLordName(kp.subLord),
+                        subSubLord: getLordName(kp.subSubLord)
+                    }
+                };
+            }
+        });
 
-        const avPositions = {
-            Sun: grahas.Su.longitude, Moon: grahas.Mo.longitude, Mars: grahas.Ma.longitude,
-            Mercury: grahas.Me.longitude, Jupiter: grahas.Ju.longitude, Venus: grahas.Ve.longitude,
-            Saturn: grahas.Sa.longitude, Ascendant: grahas.La.longitude, Rahu: grahas.Ra.longitude, Ketu: grahas.Ke.longitude
-        };
+        // 2. Get Houses (Placidus for KP)
+        const houses = calculateHouseCusps(dt, location.latitude, location.longitude, 'Placidus', eph);
+        const houseResults = houses.cusps.map((c, i) => {
+            const kp = KPSubLord.calculateKPSignificators(c);
+            return {
+                id: i + 1,
+                longitude: c,
+                sign: getSignName(c),
+                kp: {
+                    signLord: getLordName(kp.signLord),
+                    starLord: getLordName(kp.starLord),
+                    subLord: getLordName(kp.subLord),
+                    subSubLord: getLordName(kp.subSubLord)
+                }
+            };
+        });
 
-        const vargaList = ['D1', 'D2', 'D3', 'D4', 'D7', 'D9', 'D10', 'D12', 'D60'];
-        const vargas = {};
-        vargaList.forEach(v => vargas[v] = jyotish.vargas.calculateVargaChart(avPositions, v));
+        // 3. Panchanga
+        const sun = planetPositions.find(p => p.id === 0);
+        const moon = planetPositions.find(p => p.id === 1);
+        const panchanga = calculatePanchanga(sun.longitude, moon.longitude, dt);
 
-        const birthDateObj = new Date(birthData.year, birthData.month - 1, birthData.date, birthData.hour, birthData.min);
-        const dashaTree = jyotish.dashas.vimshottari.generateDashaTree(birthDateObj, grahas.Mo.longitude, 4);
+        // 4. Vargas (D1, D9, D10)
+        const vargas = { D1: {}, D9: {}, D10: {} };
+        [1, 9, 10].forEach(v => {
+            planetPositions.forEach(p => {
+                if (PLANET_NAMES[p.id]) {
+                    const vLong = calculateVarga(p.longitude, v);
+                    vargas[`D${v}`][PLANET_NAMES[p.id]] = { sign: getSignName(vLong) };
+                }
+            });
+            const ascVarga = calculateVarga(houses.ascendant, v);
+            vargas[`D${v}`]['Ascendant'] = { sign: getSignName(ascVarga) };
+        });
 
-        const doshaPositions = [
-            [0, getSignDegree(grahas.Su.longitude)], [1, getSignDegree(grahas.Mo.longitude)],
-            [2, getSignDegree(grahas.Ma.longitude)], [3, getSignDegree(grahas.Me.longitude)],
-            [4, getSignDegree(grahas.Ju.longitude)], [5, getSignDegree(grahas.Ve.longitude)],
-            [6, getSignDegree(grahas.Sa.longitude)], [7, getSignDegree(grahas.Ra.longitude)],
-            [8, getSignDegree(grahas.Ke.longitude)], ['L', getSignDegree(grahas.La.longitude)]
-        ];
-        const doshas = jyotish.doshas.getDoshaDetails(doshaPositions, grahas.Mo.longitude);
-        const yogas = jyotish.yogas.getYogaDetails(doshaPositions);
-
-        const shadbalaPositions = [
-            getSignDegree(grahas.Su.longitude), getSignDegree(grahas.Mo.longitude), getSignDegree(grahas.Ma.longitude),
-            getSignDegree(grahas.Me.longitude), getSignDegree(grahas.Ju.longitude), getSignDegree(grahas.Ve.longitude),
-            getSignDegree(grahas.Sa.longitude)
-        ];
-        const shadbala = jyotish.strengths.calculateShadbala(shadbalaPositions, Math.floor(grahas.La.longitude / 30), panchanga.julianDay, lat, lng);
-
-        // Tamil Calendar Data with correction logic
-        const tamilCal = getCorrectedTamilDate(panchanga, lat, lng, timezone);
-
-        // Calculate Hierarchical Dasha (4 levels: Maha, Antar, Pratyantar, Sukshma)
-        const dashaTree = jyotish.dashas.vimshottari.generateDashaTree(birthDateObj, grahas.Mo.longitude, 4);
-
-        // Get Active Dasha Periods for TODAY (5 levels including Prana)
-        // Using current time provided in context: 2026-01-22T23:27:34+05:30
-        const activeDasha = jyotish.dashas.vimshottari.getDashasForDate(birthDateObj, grahas.Mo.longitude, new Date());
+        // 5. Dashas (Hierarchical)
+        const dashaStart = dt.toJSDate();
+        const dashas = generateVimshottari(dashaStart, moon.longitude);
 
         res.json({
             success: true,
             data: {
-                grahas,
+                planets: results,
+                houses: houseResults,
                 panchanga,
-                tamilCalendar: tamilCal,
                 vargas,
-                dashaTree,
-                activeDasha,
-                doshas,
-                yogas: yogas.summary.present,
-                shadbala
+                dashas,
+                ascendant: houses.ascendant
             }
         });
+
     } catch (error) {
-        console.error("Calculation Error:", error);
-        res.status(400).json({ success: false, error: error.message });
+        console.error(error);
+        res.status(500).json({ success: false, error: error.message });
     }
 });
 
-app.get('/', (req, res) => res.sendFile(__dirname + '/public/index.html'));
+// Porutham Endpoint
+app.post('/api/porutham', (req, res) => {
+    try {
+        const { boyNak, girlNak, boySign, girlSign } = req.body;
+        // match(boyNak, girlNak, boySign, girlSign)
+        // boySign/girlSign: 1-12 from internal match logic
+        const match = PoruthamMatch.match(
+            parseInt(boyNak),
+            parseInt(girlNak),
+            parseInt(boySign) + 1,
+            parseInt(girlSign) + 1
+        );
+        res.json({ success: true, match });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
 
-app.listen(port, () => console.log(`Server is running on port ${port}`));
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public/index.html')));
+
+app.listen(port, () => console.log(`Server running on port ${port}`));
