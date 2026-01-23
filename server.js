@@ -62,9 +62,11 @@ const getDignity = (planetId, longitude) => {
     return 'Neutral';
 };
 
+const getSignIndex = (lon) => Math.floor(lon / 30);
+
 const getSignName = (lon) => {
     const signs = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
-    return signs[Math.floor(lon / 30)];
+    return signs[getSignIndex(lon)];
 };
 
 const getLordName = (id) => {
@@ -139,6 +141,7 @@ app.post('/calculate', async (req, res) => {
                     id: p.id,
                     longitude: p.longitude,
                     sign: getSignName(p.longitude),
+                    signIdx: getSignIndex(p.longitude),
                     signTamil: TAMIL_DATA.signs[getSignName(p.longitude)],
                     nameTamil: TAMIL_DATA.planets[pName],
                     dignity,
@@ -162,6 +165,7 @@ app.post('/calculate', async (req, res) => {
                 id: i + 1,
                 longitude: c,
                 sign: getSignName(c),
+                signIdx: getSignIndex(c),
                 kp: {
                     signLord: getLordName(kp.signLord),
                     starLord: getLordName(kp.starLord),
@@ -182,16 +186,23 @@ app.post('/calculate', async (req, res) => {
             planetPositions.forEach(p => {
                 if (PLANET_NAMES[p.id]) {
                     const vLong = calculateVarga(p.longitude, v);
-                    vargas[`D${v}`][PLANET_NAMES[p.id]] = { sign: getSignName(vLong), signTamil: TAMIL_DATA.signs[getSignName(vLong)] };
+                    vargas[`D${v}`][PLANET_NAMES[p.id]] = {
+                        sign: getSignName(vLong),
+                        signIdx: getSignIndex(vLong),
+                        signTamil: TAMIL_DATA.signs[getSignName(vLong)]
+                    };
                 }
             });
             const ascVarga = calculateVarga(houses.ascendant, v);
-            vargas[`D${v}`]['Ascendant'] = { sign: getSignName(ascVarga), signTamil: TAMIL_DATA.signs[getSignName(ascVarga)] };
+            vargas[`D${v}`]['Ascendant'] = {
+                sign: getSignName(ascVarga),
+                signIdx: getSignIndex(ascVarga),
+                signTamil: TAMIL_DATA.signs[getSignName(ascVarga)]
+            };
         });
 
         // 5. Dashas (Hierarchical)
-        const dashaStart = dt.toJSDate();
-        const dashas = generateVimshottari(dashaStart, moon.longitude);
+        const dashas = generateVimshottari(dt, moon.longitude);
 
         res.json({
             success: true,

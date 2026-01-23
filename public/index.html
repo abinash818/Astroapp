@@ -388,32 +388,88 @@
             <p>Professional Vedic Astrology Engine</p>
         </header>
 
-        <div class="glass-panel">
-            <div class="form-grid">
-                <div class="input-group" style="grid-column: 1 / -1; position: relative;">
-                    <label>Place of Birth</label>
-                    <input type="text" id="place-search" placeholder="Enter city name (e.g. Madurai, Chennai)...">
-                    <div class="suggestions" id="suggestions"></div>
+        <!-- Main Navigation -->
+        <div class="tabs" style="justify-content: center; margin-bottom: 25px;">
+            <div class="tab active" style="font-size: 1rem; padding: 12px 30px;" onclick="showMainTab('personal')">
+                Personal Horoscope</div>
+            <div class="tab" style="font-size: 1rem; padding: 12px 30px;" onclick="showMainTab('matching')">Marriage
+                Matching</div>
+        </div>
+
+        <!-- Personal Tab -->
+        <div id="personal-tab">
+            <div class="glass-panel">
+                <div class="form-grid">
+                    <div class="input-group" style="grid-column: 1 / -1; position: relative;">
+                        <label>Place of Birth</label>
+                        <input type="text" id="place-search" placeholder="Enter city name (e.g. Madurai, Chennai)...">
+                        <div class="suggestions" id="suggestions"></div>
+                    </div>
+                    <div class="input-group">
+                        <label>Full Name</label>
+                        <input type="text" id="user-name" placeholder="Enter your name">
+                    </div>
+                    <div class="input-group">
+                        <label>Gender</label>
+                        <select id="gender">
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
+                    </div>
+                    <div class="input-group"><label>Birth Date</label><input type="date" id="dob" value="1993-10-29">
+                    </div>
+                    <div class="input-group"><label>Birth Time</label><input type="time" id="tob" step="1"
+                            value="06:45:00"></div>
+                    <div class="input-group"><label>Timezone</label><input type="number" id="timezone" value="5.5"
+                            step="0.5"></div>
+                    <input type="hidden" id="lat" value="9.9252">
+                    <input type="hidden" id="lng" value="78.1198">
+                    <button class="btn-ignite" onclick="calculate()">Generate Professional Chart</button>
                 </div>
-                <div class="input-group">
-                    <label>Full Name</label>
-                    <input type="text" id="user-name" placeholder="Enter your name">
+            </div>
+        </div>
+
+        <!-- Matching Tab -->
+        <div id="matching-tab" style="display:none;">
+            <div class="glass-panel">
+                <div class="form-grid">
+                    <div style="grid-column: 1 / 2;">
+                        <h4 style="color:var(--p-1); margin-bottom:15px; text-transform:uppercase; font-size:0.8rem;">
+                            Boy's Info</h4>
+                        <div class="input-group">
+                            <label>Nakshatra</label>
+                            <select id="boy-nak"></select>
+                        </div>
+                        <div class="input-group" style="margin-top:10px;">
+                            <label>Rasi</label>
+                            <select id="boy-rasi"></select>
+                        </div>
+                    </div>
+                    <div style="grid-column: 2 / 3;">
+                        <h4 style="color:var(--p-3); margin-bottom:15px; text-transform:uppercase; font-size:0.8rem;">
+                            Girl's Info</h4>
+                        <div class="input-group">
+                            <label>Nakshatra</label>
+                            <select id="girl-nak"></select>
+                        </div>
+                        <div class="input-group" style="margin-top:10px;">
+                            <label>Rasi</label>
+                            <select id="girl-rasi"></select>
+                        </div>
+                    </div>
+                    <button class="btn-ignite" onclick="runMatching()">Check Marriage Compatibility</button>
                 </div>
-                <div class="input-group">
-                    <label>Gender</label>
-                    <select id="gender">
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                    </select>
+            </div>
+
+            <div id="match-results" style="display:none; margin-top:20px;">
+                <div class="report-header" style="background:#6a11cb;">Marriage Compatibility Report</div>
+                <div class="report-body">
+                    <div style="text-align:center; font-size:2rem; font-weight:800; color:#333; margin-bottom:20px;"
+                        id="match-score-display"></div>
+                    <div id="match-details"
+                        style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:20px;">
+                    </div>
                 </div>
-                <div class="input-group"><label>Birth Date</label><input type="date" id="dob" value="1993-10-29"></div>
-                <div class="input-group"><label>Birth Time</label><input type="time" id="tob" step="1" value="06:45:00">
-                </div>
-                <div class="input-group"><label>Timezone</label><input type="number" id="timezone" value="5.5"
-                        step="0.5"></div>
-                <input type="hidden" id="lat" value="9.9252">
-                <input type="hidden" id="lng" value="78.1198">
-                <button class="btn-ignite" onclick="calculate()">Generate Professional Chart</button>
             </div>
         </div>
 
@@ -460,6 +516,57 @@
         let currentVarga = 'D1';
         const SIGN_MAP = [[0, 0, 11], [1, 0, 0], [2, 0, 1], [3, 0, 2], [3, 1, 3], [3, 2, 4], [3, 3, 5], [2, 3, 6], [1, 3, 7], [0, 3, 8], [0, 2, 9], [0, 1, 10]];
         const SIGN_NAMES_EN = ["Ar", "Ta", "Ge", "Cn", "Le", "Vi", "Li", "Sc", "Sg", "Cp", "Aq", "Pi"];
+        const NAKSHATRAS = ["Ashwini", "Bharani", "Krittika", "Rohini", "Mrigashira", "Ardra", "Punarvasu", "Pushya", "Ashlesha", "Magha", "P.Phalguni", "U.Phalguni", "Hasta", "Chitra", "Swati", "Vishakha", "Anuradha", "Jyeshtha", "Mula", "P.Ashada", "U.Ashada", "Shravana", "Dhanishta", "Shatabhisha", "P.Bhadra", "U.Bhadra", "Revati"];
+
+        // Initialize Matching Selects
+        const nakSelects = [document.getElementById('boy-nak'), document.getElementById('girl-nak')];
+        const rasiSelects = [document.getElementById('boy-rasi'), document.getElementById('girl-rasi')];
+        nakSelects.forEach(sel => NAKSHATRAS.forEach((n, i) => sel.innerHTML += `<option value="${i}">${n}</option>`));
+        ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"].forEach((s, i) => {
+            rasiSelects.forEach(sel => sel.innerHTML += `<option value="${i}">${s}</option>`);
+        });
+
+        function showMainTab(tab) {
+            document.getElementById('personal-tab').style.display = tab === 'personal' ? 'block' : 'none';
+            document.getElementById('matching-tab').style.display = tab === 'matching' ? 'block' : 'none';
+            if (tab === 'matching') document.getElementById('results').style.display = 'none';
+
+            const mainTabs = document.querySelector('.container > .tabs').children;
+            mainTabs[0].classList.toggle('active', tab === 'personal');
+            mainTabs[1].classList.toggle('active', tab === 'matching');
+        }
+
+        async function runMatching() {
+            const payload = {
+                boyNak: document.getElementById('boy-nak').value,
+                girlNak: document.getElementById('girl-nak').value,
+                boySign: document.getElementById('boy-rasi').value,
+                girlSign: document.getElementById('girl-rasi').value
+            };
+            const res = await fetch('/api/porutham', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            const { match } = await res.json();
+
+            if (match) {
+                const resultsDiv = document.getElementById('match-results');
+                resultsDiv.style.display = 'block';
+                document.getElementById('match-score-display').textContent = `Total Score: ${match.totalScore} / ${match.maxTotal}`;
+
+                let detailsHtml = '';
+                match.matches.forEach(m => {
+                    const status = m.score > 0 ? '✔️' : '❌';
+                    detailsHtml += `
+                    <div style="background:#f9f9f9; padding:15px; border-radius:12px; border:1px solid #eee;">
+                        <h4 style="margin-bottom:8px; display:flex; justify-content:space-between; font-size:0.9rem;">
+                            <span>${m.name}</span> <span>${status}</span>
+                        </h4>
+                        <div style="font-size:0.75rem; color:#666; font-weight:700;">Score: ${m.score}/${m.maxScore}</div>
+                        <p style="font-size:0.7rem; color:#888; margin-top:5px;">${m.description}</p>
+                    </div>`;
+                });
+                document.getElementById('match-details').innerHTML = detailsHtml;
+                resultsDiv.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
 
         async function calculate() {
             document.getElementById('loader').style.display = 'flex';
@@ -529,10 +636,10 @@
                 const cell = document.createElement('div');
                 cell.className = 'si-cell';
                 cell.style.gridColumn = x + 1; cell.style.gridRow = y + 1;
-                cell.setAttribute('data-sign', SIGN_NAMES_EN[sid]);
+                cell.setAttribute('data-sign', sid);
+
                 Object.entries(chartData).forEach(([pName, pVal]) => {
-                    const pSignIdx = SIGN_NAMES_EN.indexOf(pVal.sign.substring(0, 2));
-                    if (pSignIdx === sid) {
+                    if (pVal.signIdx === sid) {
                         const span = document.createElement('span');
                         span.className = 'planet-icon' + (pName === 'Ascendant' ? ' asc' : '');
                         const tamilName = globalData.tamilData.planets[pName] || 'ல';
