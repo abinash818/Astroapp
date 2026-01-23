@@ -6,8 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AstroGlow Pro - Ultra Premium Astrology</title>
     <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&family=Hind+Madurai:wght@400;700&display=swap"
         rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
             --primary: #6366f1;
@@ -373,15 +374,101 @@
             color: #fff;
         }
 
-        .loader-overlay {
+        /* PDF Print Styles */
+        #printable-report {
             display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 23, 42, 0.9);
-            z-index: 2000;
-            justify-content: center;
+            width: 800px;
+            padding: 40px;
+            background: #fff;
+            color: #000;
+            font-family: 'Hind Madurai', sans-serif;
+            border: 10px double #444;
+            margin: 20px auto;
+        }
+
+        .report-header {
+            display: flex;
             align-items: center;
-            backdrop-filter: blur(5px);
+            border-bottom: 2px solid #8B0000;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+
+        .report-header img {
+            width: 100px;
+            height: auto;
+            margin-right: 30px;
+        }
+
+        .consultant-info h2 {
+            color: #8B0000;
+            font-size: 1.6rem;
+            margin-bottom: 5px;
+        }
+
+        .consultant-info p {
+            font-size: 0.9rem;
+            color: #444;
+            line-height: 1.4;
+        }
+
+        .report-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .info-table td {
+            padding: 6px;
+            border: 1px solid #eee;
+            font-size: 0.85rem;
+        }
+
+        .info-table td:first-child {
+            font-weight: 700;
+            background: #f9f9f9;
+            width: 40%;
+        }
+
+        .p-chart {
+            width: 300px;
+            height: 300px;
+            border: 2px solid #000;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .p-chart .cell {
+            border: 0.5px solid #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            position: relative;
+        }
+
+        .p-chart .cell::after {
+            color: #aaa;
+        }
+
+        .p-chart .center {
+            grid-column: 2/4;
+            grid-row: 2/4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            border: none;
         }
 
         .pulse {
@@ -445,7 +532,11 @@
             <!-- Global Control -->
             <div class="glass-card" id="ctrl-panel">
                 <div class="form-grid">
-                    <div class="input-group" style="grid-column: 1/3;">
+                    <div class="input-group" style="grid-column: 1/1;">
+                        <label>User Name</label>
+                        <input type="text" id="u-name" placeholder="Enter Name" value="Guest User">
+                    </div>
+                    <div class="input-group" style="grid-column: 2/4;">
                         <label>Birth Place</label>
                         <input type="text" id="p-input" placeholder="Search City...">
                         <div class="suggest-pop" id="p-list"></div>
@@ -454,8 +545,75 @@
                             value="1993-10-29"></div>
                     <div class="input-group"><label>Birth Time</label><input type="time" id="t-input" value="06:45:00"
                             step="1"></div>
-                    <button class="btn-glow" onclick="ignite()">Ignite calculation</button>
+                    <div style="display:flex; gap:15px; grid-column: 1/-1;">
+                        <button class="btn-glow" style="flex:1" onclick="ignite()">Ignite calculation</button>
+                        <button class="btn-glow" id="pdf-btn"
+                            style="flex:1; background:linear-gradient(135deg, #10b981, #059669); opacity:0.5; pointer-events:none;"
+                            onclick="generatePDF()">Download PDF Report</button>
+                    </div>
                     <input type="hidden" id="v-lat" value="9.9252"><input type="hidden" id="v-lng" value="78.1198">
+                </div>
+            </div>
+
+            <!-- Hidden Printable Report Area -->
+            <div id="printable-report">
+                <div class="report-header">
+                    <img src="https://i.ibb.co/vzZ8q5M/ganesha-icon.png" alt="Ganesha">
+                    <div class="consultant-info">
+                        <h2>Jothida Abimenyu K. Abinash</h2>
+                        <p>KAVIN Stellar Astrology Consultation & Training Centre</p>
+                        <p>No. 8 Geetha Complex, Murugampalayam, TIRUPPUR - 641 687</p>
+                        <p>Cell: 9942101990, 8681818346 | Email: abinash818@gmail.com</p>
+                    </div>
+                </div>
+
+                <div class="report-grid">
+                    <div>
+                        <h4 style="border-bottom: 2px solid #8B0000; margin-bottom: 10px; color:#8B0000;">ஜாதக விவரங்கள்
+                            (Birth Info)</h4>
+                        <table class="info-table" id="pdf-birth-info"></table>
+
+                        <h4
+                            style="border-bottom: 2px solid #8B0000; margin-top: 20px; margin-bottom: 10px; color:#8B0000;">
+                            பஞ்சாங்கம் (Panchanga)</h4>
+                        <table class="info-table" id="pdf-panchanga-info"></table>
+                    </div>
+                    <div>
+                        <h4 style="text-align:center; margin-bottom:10px; color:#8B0000;">இராசி கட்டம் (Rasi Chart)</h4>
+                        <div class="p-chart" id="pdf-chart-d1"></div>
+                        <h4 style="text-align:center; margin-top:20px; margin-bottom:10px; color:#8B0000;">அம்ச கட்டம்
+                            (Navamsa Chart)</h4>
+                        <div class="p-chart" id="pdf-chart-d9"></div>
+                    </div>
+                </div>
+
+                <div style="margin-top:30px;">
+                    <h4 style="border-bottom: 2px solid #8B0000; margin-bottom: 10px; color:#8B0000;">கிரக நிலைகள்
+                        (Planetary Positions)</h4>
+                    <table class="info-table" id="pdf-planets-table" style="text-align:center;">
+                        <thead>
+                            <tr style="background:#f1f1f1; font-weight:700;">
+                                <td style="padding:10px;">கிரகம்</td>
+                                <td>ராசி</td>
+                                <td>நட்சத்திரம்</td>
+                                <td>பாதம்</td>
+                                <td>டிகிரி</td>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+                <div style="margin-top:30px;">
+                    <h4 style="border-bottom: 2px solid #8B0000; margin-bottom: 10px; color:#8B0000;">விம்சோத்தரி தசை
+                        (Vimshottari Dasha)</h4>
+                    <div id="pdf-dasha-info"
+                        style="font-size:0.85rem; display:grid; grid-template-columns: 1fr 1fr; gap:15px;"></div>
+                </div>
+
+                <div
+                    style="margin-top:40px; text-align:center; font-size:0.8rem; color:#888; border-top:1px solid #eee; padding-top:10px;">
+                    Report Generated by AstroGlow Pro | Consultant: Jothida Abimenyu K. Abinash
                 </div>
             </div>
 
@@ -591,8 +749,105 @@
                 if (!result.success) throw new Error(result.error);
                 gData = result.data;
                 drawAll();
+                // Enable PDF button
+                const pdfBtn = document.getElementById('pdf-btn');
+                pdfBtn.style.opacity = '1';
+                pdfBtn.style.pointerEvents = 'auto';
             } catch (e) { alert("Cosmic Interference: " + e.message); }
             showPulse(false);
+        }
+
+        function generatePDF() {
+            if (!gData) return;
+            showPulse(true);
+
+            // 1. Populate Birth Info
+            const bTable = document.getElementById('pdf-birth-info');
+            const row = (l, v) => `<tr><td>${l}</td><td>${v}</td></tr>`;
+            bTable.innerHTML = `
+                ${row('பெயர் (Name)', document.getElementById('u-name').value)}
+                ${row('பிறந்த தேதி (DOB)', document.getElementById('d-input').value)}
+                ${row('பிறந்த நேரம் (Time)', document.getElementById('t-input').value)}
+                ${row('இடம் (Place)', document.getElementById('p-input').value)}
+                ${row('லக்னம் (Lagna)', gData.tamilData.signs[gData.vargas.D1.Ascendant.sign])}
+            `;
+
+            // 2. Populate Panchanga
+            const p = gData.panchanga;
+            const pTable = document.getElementById('pdf-panchanga-info');
+            pTable.innerHTML = `
+                ${row('திதி (Tithi)', p.tithi.name)}
+                ${row('நட்சத்திரம் (Star)', p.nakshatra.name)}
+                ${row('யோகம் (Yoga)', p.yoga.name)}
+                ${row('கரணம் (Karana)', p.karana.name)}
+                ${row('கிழமை (Day)', p.vara.name)}
+            `;
+
+            // 3. Populate Planets
+            const plTable = document.getElementById('pdf-planets-table').querySelector('tbody');
+            plTable.innerHTML = '';
+            Object.entries(gData.planets).forEach(([name, d]) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${d.nameTamil}</td><td>${d.signTamil}</td><td>${d.nakshatra.name}</td><td>${d.nakshatra.pada}</td><td>${(d.longitude % 30).toFixed(2)}°</td>`;
+                plTable.appendChild(tr);
+            });
+
+            // 4. Populate Dashas
+            const dashaBox = document.getElementById('pdf-dasha-info');
+            dashaBox.innerHTML = '';
+            gData.dashas.vimshottari.slice(0, 8).forEach(m => {
+                dashaBox.innerHTML += `
+                    <div style="padding:10px; border:1px solid #eee; border-radius:8px;">
+                        <strong>${m.planet} தசை</strong> <br>
+                        முடிவு: ${new Date(m.end).toLocaleDateString()}
+                    </div>
+                `;
+            });
+
+            // 5. Draw Charts for PDF
+            drawPdfChart('pdf-chart-d1', 'D1');
+            drawPdfChart('pdf-chart-d9', 'D9');
+
+            // 6. Final PDF Generation
+            const element = document.getElementById('printable-report');
+            element.style.display = 'block'; // Temporarily show for capture
+
+            const opt = {
+                margin: 0.5,
+                filename: 'AstroGlow_Pro_Report.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+
+            html2pdf().from(element).set(opt).save().then(() => {
+                element.style.display = 'none'; // Hide again
+                showPulse(false);
+            });
+        }
+
+        function drawPdfChart(cId, vKey) {
+            const box = document.getElementById(cId);
+            box.innerHTML = `<div class="center" style="color:#8B0000; font-size:1.2rem;">${vKey === 'D1' ? 'இராசி' : 'அம்சம்'}</div>`;
+            const data = gData.vargas[vKey];
+            S_MAP.forEach(([x, y, sid]) => {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.style.gridColumn = x + 1; cell.style.gridRow = y + 1;
+                cell.setAttribute('data-sign', S_NAMES[sid]);
+                Object.entries(data).forEach(([pName, pVal]) => {
+                    if (parseInt(pVal.signIdx) === parseInt(sid)) {
+                        const el = document.createElement('div');
+                        const isAsc = pName === 'Ascendant' || pName === 'Lagna';
+                        el.style.color = isAsc ? '#8B0000' : '#000';
+                        el.style.fontSize = '0.7rem';
+                        const tamilName = gData.tamilData.planets[pName] || pName;
+                        el.textContent = isAsc ? 'ல' : tamilName.substring(0, 2);
+                        cell.appendChild(el);
+                    }
+                });
+                box.appendChild(cell);
+            });
         }
 
         function drawAll() {
