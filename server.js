@@ -208,7 +208,7 @@ app.post('/calculate', async (req, res) => {
         // 6. Dashas
         const dashas = {
             vimshottari: generateVimshottari(dt, planets.Moon.longitude),
-            yogini: YoginiDasha.calculate(dt, planets.Moon.longitude)
+            yogini: YoginiDasha.calculate(planets.Moon.longitude, dt)
         };
 
         res.json({

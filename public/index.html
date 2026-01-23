@@ -4,245 +4,269 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AstroGlow Pro - Professional Astrology Dashboard</title>
+    <title>AstroGlow Pro - Ultra Premium Astrology</title>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap"
         rel="stylesheet">
     <style>
         :root {
-            --primary: #2563eb;
-            --primary-light: #dbeafe;
-            --bg: #f8fafc;
-            --sidebar: #ffffff;
-            --card: #ffffff;
-            --text: #1e293b;
-            --text-light: #64748b;
-            --border: #e2e8f0;
-            --accent: #8b5cf6;
-            --success: #10b981;
-            --error: #ef4444;
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.4);
+            --secondary: #ec4899;
+            --secondary-glow: rgba(236, 72, 153, 0.4);
+            --accent: #f59e0b;
+            --bg: #0f172a;
+            --glass: rgba(30, 41, 59, 0.7);
+            --text: #f8fafc;
+            --text-dim: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Outfit', sans-serif;
         }
 
         body {
             background: var(--bg);
             color: var(--text);
             overflow-x: hidden;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at 0% 0%, #1e1b4b 0%, transparent 50%), radial-gradient(circle at 100% 100%, #4c0519 0%, transparent 50%);
         }
 
-        /* Sidebar Nav */
+        /* Modern Sidebar */
         .layout {
             display: flex;
             min-height: 100vh;
         }
 
         .sidebar {
-            width: 260px;
-            background: var(--sidebar);
+            width: 280px;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
             border-right: 1px solid var(--border);
-            padding: 30px 20px;
+            padding: 40px 20px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
             position: fixed;
             height: 100vh;
+            z-index: 100;
         }
 
         .logo {
             font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
+            font-size: 2rem;
             font-weight: 800;
-            color: var(--primary);
-            margin-bottom: 30px;
+            background: linear-gradient(to right, #818cf8, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 40px;
             text-align: center;
+            filter: drop-shadow(0 0 10px var(--primary-glow));
         }
 
         .nav-item {
-            padding: 12px 15px;
-            border-radius: 10px;
+            padding: 14px 20px;
+            border-radius: 12px;
             cursor: pointer;
-            color: var(--text-light);
-            font-weight: 500;
-            transition: 0.2s;
+            color: var(--text-dim);
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            border: 1px solid transparent;
         }
 
         .nav-item:hover {
-            background: var(--bg);
-            color: var(--primary);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            transform: translateX(5px);
         }
 
         .nav-item.active {
-            background: var(--primary-light);
-            color: var(--primary);
+            background: linear-gradient(135deg, var(--primary), #4f46e5);
+            color: #fff;
+            box-shadow: 0 10px 20px -5px var(--primary-glow);
+            border-color: rgba(255, 255, 255, 0.2);
         }
 
-        /* Main Content */
+        /* Content Area */
         .main {
             flex: 1;
-            margin-left: 260px;
-            padding: 40px;
+            margin-left: 280px;
+            padding: 50px;
         }
 
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
         }
 
         .header h1 {
-            font-size: 1.8rem;
+            font-size: 2.2rem;
             font-weight: 800;
-            color: #111;
+            letter-spacing: -1px;
         }
 
-        /* Tab Screens */
+        /* Screens */
         .screen {
             display: none;
+            animation: fadeIn 0.5s ease;
         }
 
         .screen.active {
             display: block;
         }
 
-        /* Cards & Forms */
-        .card {
-            background: var(--card);
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Panels & Cards */
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
             border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 25px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            margin-bottom: 25px;
+            border-radius: 24px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, transparent 70%);
+            pointer-events: none;
         }
 
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
         }
 
         .input-group {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
             position: relative;
         }
 
         label {
             font-size: 0.75rem;
-            color: var(--text-light);
+            color: var(--text-dim);
             font-weight: 700;
             text-transform: uppercase;
+            letter-spacing: 1.5px;
         }
 
         input,
         select {
-            padding: 12px;
+            background: rgba(0, 0, 0, 0.2);
             border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 0.9rem;
+            border-radius: 12px;
+            padding: 14px;
+            color: #fff;
+            font-size: 1rem;
+            transition: 0.3s;
         }
 
-        .btn-primary {
-            background: var(--primary);
+        input:focus,
+        select:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 4px var(--primary-glow);
+        }
+
+        .btn-glow {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: #fff;
             border: none;
-            padding: 14px 25px;
-            border-radius: 10px;
-            font-weight: 700;
+            padding: 16px 30px;
+            border-radius: 14px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
             cursor: pointer;
-            transition: 0.2s;
+            transition: 0.3s;
+            box-shadow: 0 10px 20px -5px var(--secondary-glow);
         }
 
-        .btn-primary:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
+        .btn-glow:hover {
+            transform: scale(1.02);
+            filter: brightness(1.1);
         }
 
-        /* Grid Layouts */
-        .grid-3 {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 25px;
-        }
-
-        .grid-vargas {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 20px;
-        }
-
-        /* Tables */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-
-        th {
-            text-align: left;
-            font-size: 0.75rem;
-            color: var(--text-light);
-            padding: 10px;
-            border-bottom: 2px solid var(--border);
-        }
-
-        td {
-            padding: 12px 10px;
-            font-size: 0.85rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        /* Chart */
-        .chart-box {
-            width: 320px;
+        /* Charts & Visuals */
+        .chart-visual {
+            width: 340px;
             aspect-ratio: 1;
-            border: 2px solid #333;
+            border: 2px solid #475569;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             grid-template-rows: repeat(4, 1fr);
-            background: #fff;
+            background: #0f172a;
             margin: 0 auto;
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
         }
 
         .cell {
-            border: 0.5px solid #ddd;
-            padding: 5px;
+            border: 0.5px solid #1e293b;
+            padding: 6px;
             position: relative;
             display: flex;
             flex-wrap: wrap;
-            gap: 2px;
+            gap: 4px;
         }
 
         .cell::after {
             content: attr(data-sign);
             position: absolute;
-            bottom: 2px;
-            right: 2px;
-            font-size: 0.5rem;
-            color: #ccc;
-        }
-
-        .p-tag {
-            font-size: 0.65rem;
+            bottom: 3px;
+            right: 4px;
+            font-size: 0.55rem;
+            color: #475569;
             font-weight: 800;
-            color: #2563eb;
+            text-transform: uppercase;
         }
 
-        .p-tag.asc {
-            color: #ef4444;
+        .p-unit {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: #818cf8;
+            padding: 2px 4px;
+            border-radius: 4px;
         }
 
-        .cell-center {
+        .p-unit.asc {
+            color: #f472b6;
+            border: 1px solid #f472b6;
+        }
+
+        .cell-core {
             grid-column: 2/4;
             grid-row: 2/4;
             display: flex;
@@ -250,76 +274,146 @@
             justify-content: center;
             align-items: center;
             font-weight: 800;
-            font-size: 0.8rem;
-            background: #fdfdfd;
+            font-size: 1rem;
+            color: #f472b6;
+            text-shadow: 0 0 10px var(--secondary-glow);
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 8px;
+            margin-top: 20px;
+        }
+
+        th {
+            text-align: left;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            padding: 10px 15px;
+            border-bottom: 1px solid var(--border);
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 16px 15px;
+            font-size: 0.9rem;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        tr td:first-child {
+            border-radius: 12px 0 0 12px;
+        }
+
+        tr td:last-child {
+            border-radius: 0 12px 12px 0;
+        }
+
+        /* Dashboard Specific */
+        .grid-master {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 30px;
+        }
+
+        .varga-scroll {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 25px;
+        }
+
+        .tag-pill {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .status-exalted {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .status-debilitated {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.2);
         }
 
         /* Suggestions */
-        .suggestions {
+        .suggest-pop {
             position: absolute;
             top: 100%;
             left: 0;
             right: 0;
-            background: #fff;
+            background: #1e293b;
             border: 1px solid var(--border);
-            z-index: 100;
-            border-radius: 8px;
-            max-height: 200px;
+            z-index: 200;
+            border-radius: 12px;
+            max-height: 250px;
             overflow-y: auto;
             display: none;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
         }
 
-        .suggest-item {
-            padding: 10px;
+        .pop-item {
+            padding: 12px 15px;
             cursor: pointer;
             border-bottom: 1px solid var(--border);
-            font-size: 0.85rem;
+            font-size: 0.9rem;
+            transition: 0.2s;
         }
 
-        .suggest-item:hover {
-            background: var(--bg);
+        .pop-item:hover {
+            background: var(--primary);
+            color: #fff;
         }
 
-        .tag {
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            white-space: nowrap;
-        }
-
-        .tag-success {
-            background: #d1fae5;
-            color: #065f46;
-        }
-
-        .tag-error {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .loader {
+        .loader-overlay {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(255, 255, 255, 0.8);
-            z-index: 1000;
+            background: rgba(15, 23, 42, 0.9);
+            z-index: 2000;
             justify-content: center;
             align-items: center;
+            backdrop-filter: blur(5px);
         }
 
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid var(--primary-light);
-            border-top: 4px solid var(--primary);
+        .pulse {
+            width: 80px;
+            height: 80px;
+            position: relative;
+        }
+
+        .pulse::before,
+        .pulse::after {
+            content: '';
+            position: absolute;
+            inset: 0;
             border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+            background: var(--primary);
+            opacity: 0.5;
+            animation: orbit 2s ease-out infinite;
         }
 
-        @keyframes spin {
-            100% {
-                transform: rotate(360deg);
+        .pulse::after {
+            animation-delay: 1s;
+        }
+
+        @keyframes orbit {
+            from {
+                transform: scale(0);
+                opacity: 0.8;
+            }
+
+            to {
+                transform: scale(2);
+                opacity: 0;
             }
         }
     </style>
@@ -327,353 +421,321 @@
 
 <body>
 
-    <div class="loader" id="loader">
-        <div class="spinner"></div>
+    <div class="loader-overlay" id="loading">
+        <div class="pulse"></div>
     </div>
 
     <div class="layout">
         <div class="sidebar">
-            <div class="logo">AstroGlow Pro</div>
-            <div class="nav-item active" onclick="switchScreen('dashboard')">🏠 Overview</div>
-            <div class="nav-item" onclick="switchScreen('vargas')">📐 Divisional Charts</div>
-            <div class="nav-item" onclick="switchScreen('dashas')">⏳ Dashas (Vimshottari)</div>
-            <div class="nav-item" onclick="switchScreen('jaimini-kp')">🧿 KP & Jaimini</div>
-            <div class="nav-item" onclick="switchScreen('analytics')">📊 Shadbala & Yogas</div>
-            <div class="nav-item" onclick="switchScreen('matching')">❤️ Marriage Match</div>
+            <div class="logo">AstroGlow</div>
+            <div class="nav-item active" onclick="goScreen('dash')">🌌 Overview</div>
+            <div class="nav-item" onclick="goScreen('var')">💎 Divisions (Vargas)</div>
+            <div class="nav-item" onclick="goScreen('tim')">⌛ Time Cycles (Dashas)</div>
+            <div class="nav-item" onclick="goScreen('sec')">🔭 Advanced (KP/Jam)</div>
+            <div class="nav-item" onclick="goScreen('ygo')">🎭 Yogas & Strengths</div>
+            <div class="nav-item" onclick="goScreen('mat')">💑 Soul Matching</div>
         </div>
 
         <div class="main">
             <div class="header">
-                <h1 id="screen-title">Dashboard Overview</h1>
-                <div id="active-user-info" style="font-weight: 600; color: var(--text-light); font-size: 0.9rem;"></div>
+                <h1 id="screen-label">Cosmic Overview</h1>
+                <div id="stat-bar" style="font-size: 0.9rem; color: var(--text-dim);">Ready for calculation...</div>
             </div>
 
-            <!-- Global Input Area -->
-            <div class="card" id="global-input">
+            <!-- Global Control -->
+            <div class="glass-card" id="ctrl-panel">
                 <div class="form-grid">
                     <div class="input-group" style="grid-column: 1/3;">
-                        <label>Place Name</label>
-                        <input type="text" id="g-place" placeholder="City Search (e.g. Madurai)">
-                        <div class="suggestions" id="g-suggest"></div>
+                        <label>Birth Place</label>
+                        <input type="text" id="p-input" placeholder="Search City...">
+                        <div class="suggest-pop" id="p-list"></div>
                     </div>
-                    <div class="input-group"><label>Date</label><input type="date" id="g-dob" value="1993-10-29"></div>
-                    <div class="input-group"><label>Time</label><input type="time" id="g-tob" value="06:45:00" step="1">
-                    </div>
-                    <div class="input-group"><label>Timezone</label><input type="number" id="g-tz" value="5.5"
-                            step="0.5"></div>
-                    <button class="btn-primary" onclick="calculateAll()">Run All Engines</button>
-                    <input type="hidden" id="g-lat" value="9.9252"><input type="hidden" id="g-lng" value="78.1198">
+                    <div class="input-group"><label>Birth Date</label><input type="date" id="d-input"
+                            value="1993-10-29"></div>
+                    <div class="input-group"><label>Birth Time</label><input type="time" id="t-input" value="06:45:00"
+                            step="1"></div>
+                    <button class="btn-glow" onclick="ignite()">Ignite calculation</button>
+                    <input type="hidden" id="v-lat" value="9.9252"><input type="hidden" id="v-lng" value="78.1198">
                 </div>
             </div>
 
-            <!-- Screens -->
-            <div id="s-dashboard" class="screen active">
-                <div class="grid-3">
-                    <div class="card">
-                        <h3 style="margin-bottom:15px; font-size:1rem;">Rasi Chart (D1)</h3>
-                        <div class="chart-box" id="chart-d1"></div>
+            <!-- Screen Dash -->
+            <div id="scr-dash" class="screen active">
+                <div class="grid-master">
+                    <div class="glass-card">
+                        <h3 style="margin-bottom:20px; color:#fff;">D1 - Rasi Mandala</h3>
+                        <div class="chart-visual" id="viz-d1"></div>
                     </div>
-                    <div class="card">
-                        <h3 style="margin-bottom:15px; font-size:1rem;">Panchangam</h3>
-                        <div id="panchanga-data"></div>
+                    <div class="glass-card">
+                        <h3 style="margin-bottom:20px; color:#fff;">Panchanga Flux</h3>
+                        <div id="pan-box"></div>
                     </div>
-                    <div class="card">
-                        <h3 style="margin-bottom:15px; font-size:1rem;">Planetary Degrees</h3>
-                        <div id="planet-data" style="max-height: 350px; overflow-y: auto;"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="s-vargas" class="screen">
-                <div class="grid-vargas" id="varga-grid"></div>
-            </div>
-
-            <div id="s-dashas" class="screen">
-                <div class="card">
-                    <h3>Vimshottari Dasha Hierarchy</h3>
-                    <div id="dasha-tree" style="margin-top:20px;"></div>
-                </div>
-            </div>
-
-            <div id="s-jaimini-kp" class="screen">
-                <div class="grid-3">
-                    <div class="card">
-                        <h3>Jaimini Chara Karakas</h3>
-                        <div id="jaimini-data"></div>
-                    </div>
-                    <div class="card" style="grid-column: span 2;">
-                        <h3>KP House/Planet Significators</h3>
-                        <div id="kp-data"></div>
+                    <div class="glass-card" style="grid-column: 1/-1;">
+                        <h3 style="margin-bottom:20px; color:#fff;">Planetary Alignments</h3>
+                        <div id="pla-box"></div>
                     </div>
                 </div>
             </div>
 
-            <div id="s-analytics" class="screen">
-                <div class="grid-3">
-                    <div class="card">
-                        <h3>Shadbala Points</h3>
-                        <div id="shadbala-data"></div>
-                    </div>
-                    <div class="card">
-                        <h3>Detected Yogas</h3>
-                        <div id="yoga-data" style="max-height:400px; overflow-y:auto;"></div>
-                    </div>
-                    <div class="card">
-                        <h3>Ashtakavarga (Sarva)</h3>
-                        <div id="av-data"></div>
-                    </div>
+            <!-- Screen Vargas -->
+            <div id="scr-var" class="screen">
+                <div class="varga-scroll" id="var-box"></div>
+            </div>
+
+            <!-- Screen Dashas -->
+            <div id="scr-tim" class="screen">
+                <div class="glass-card">
+                    <h3>Vimshottari Time-line</h3>
+                    <div id="tim-box" style="margin-top:20px;"></div>
                 </div>
             </div>
 
-            <div id="s-matching" class="screen">
-                <div class="card">
-                    <h3>Marriage Porutham (Birth Detail Match)</h3>
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:40px; margin-top:20px;">
+            <!-- Matching Screen -->
+            <div id="scr-mat" class="screen">
+                <div class="glass-card">
+                    <h3 style="text-align:center; font-size:1.5rem; margin-bottom:40px;">Divine Union Compatibility</h3>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:50px;">
                         <div>
-                            <h4 style="margin-bottom:15px; color:var(--primary);">Boy's Details</h4>
+                            <h4 style="color:var(--primary); margin-bottom:20px; text-transform:uppercase;">Boy's Origin
+                            </h4>
                             <div class="form-grid" style="grid-template-columns: 1fr;">
                                 <div class="input-group">
-                                    <label>Place</label>
-                                    <input type="text" id="b-place" placeholder="Search Boy's birthplace">
-                                    <div class="suggestions" id="b-suggest"></div>
+                                    <label>Birth Place</label>
+                                    <input type="text" id="bm-place" placeholder="Search City...">
+                                    <div class="suggest-pop" id="bm-list"></div>
                                 </div>
-                                <div class="input-group"><label>Date</label><input type="date" id="b-dob"
+                                <div class="input-group"><label>Birth Date</label><input type="date" id="bm-dob"
                                         value="1990-01-01"></div>
-                                <div class="input-group"><label>Time</label><input type="time" id="b-tob"
+                                <div class="input-group"><label>Birth Time</label><input type="time" id="bm-tob"
                                         value="12:00:00" step="1"></div>
-                                <input type="hidden" id="b-lat" value="28.6"><input type="hidden" id="b-lng"
+                                <input type="hidden" id="bm-lat" value="28.6"><input type="hidden" id="bm-lng"
                                     value="77.2">
                             </div>
                         </div>
                         <div>
-                            <h4 style="margin-bottom:15px; color:var(--accent);">Girl's Details</h4>
+                            <h4 style="color:var(--secondary); margin-bottom:20px; text-transform:uppercase;">Girl's
+                                Origin</h4>
                             <div class="form-grid" style="grid-template-columns: 1fr;">
                                 <div class="input-group">
-                                    <label>Place</label>
-                                    <input type="text" id="g-place-match" placeholder="Search Girl's birthplace">
-                                    <div class="suggestions" id="g-suggest-match"></div>
+                                    <label>Birth Place</label>
+                                    <input type="text" id="gm-place" placeholder="Search City...">
+                                    <div class="suggest-pop" id="gm-list"></div>
                                 </div>
-                                <div class="input-group"><label>Date</label><input type="date" id="g-dob-match"
+                                <div class="input-group"><label>Birth Date</label><input type="date" id="gm-dob"
                                         value="1995-01-01"></div>
-                                <div class="input-group"><label>Time</label><input type="time" id="g-tob-match"
+                                <div class="input-group"><label>Birth Time</label><input type="time" id="gm-tob"
                                         value="12:00:00" step="1"></div>
-                                <input type="hidden" id="g-lat-match" value="13.1"><input type="hidden" id="g-lng-match"
+                                <input type="hidden" id="gm-lat" value="13.1"><input type="hidden" id="gm-lng"
                                     value="80.2">
                             </div>
                         </div>
                     </div>
-                    <button class="btn-primary" style="width:100%; margin-top:30px;" onclick="calculatePorutham()">Check
+                    <button class="btn-glow" style="width:100%; margin-top:40px;" onclick="matSoul()">Calculate
                         Compatibility</button>
 
-                    <div id="match-results-box"
-                        style="display:none; margin-top:30px; border-top:1px solid #eee; padding-top:20px;">
-                        <h2 id="match-score-text" style="text-align:center; font-size:2rem; margin-bottom:20px;"></h2>
-                        <div id="match-details-grid" class="grid-vargas"></div>
+                    <div id="mat-res" style="display:none; margin-top:50px;">
+                        <div style="text-align:center;">
+                            <span style="font-size:1rem; color:var(--text-dim);">Soul Match Score</span>
+                            <h1 id="mat-scr"
+                                style="font-size:4rem; margin:10px 0; background:linear-gradient(to right, #818cf8, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                                75%</h1>
+                        </div>
+                        <div id="mat-det" class="varga-scroll" style="margin-top:30px;"></div>
                     </div>
+                </div>
+            </div>
+
+            <!-- Placeholder screens for others -->
+            <div id="scr-sec" class="screen">
+                <div class="glass-card">
+                    <h3>KP / Jaimini Data</h3>
+                    <div id="sec-box"></div>
+                </div>
+            </div>
+            <div id="scr-ygo" class="screen">
+                <div class="glass-card">
+                    <h3>Yogas & Shadbala</h3>
+                    <div id="ygo-box" class="grid-master"></div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        let globalData = null;
-        const SIGN_MAP = [[0, 0, 11], [1, 0, 0], [2, 0, 1], [3, 0, 2], [3, 1, 3], [3, 2, 4], [3, 3, 5], [2, 3, 6], [1, 3, 7], [0, 3, 8], [0, 2, 9], [0, 1, 10]];
-        const SIGN_NAMES_SHORT = ["Ar", "Ta", "Ge", "Cn", "Le", "Vi", "Li", "Sc", "Sg", "Cp", "Aq", "Pi"];
+        let gData = null;
+        const S_MAP = [[0, 0, 11], [1, 0, 0], [2, 0, 1], [3, 0, 2], [3, 1, 3], [3, 2, 4], [3, 3, 5], [2, 3, 6], [1, 3, 7], [0, 3, 8], [0, 2, 9], [0, 1, 10]];
+        const S_NAMES = ["Ar", "Ta", "Ge", "Cn", "Le", "Vi", "Li", "Sc", "Sg", "Cp", "Aq", "Pi"];
 
-        function switchScreen(id) {
+        function goScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById('s-' + id).classList.add('active');
+            document.getElementById('scr-' + id).classList.add('active');
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.querySelector(`[onclick="switchScreen('${id}')"]`).classList.add('active');
-            document.getElementById('screen-title').textContent = document.querySelector('.nav-item.active').textContent;
-            // Hide global input for matching screen to save space
-            document.getElementById('global-input').style.display = id === 'matching' ? 'none' : 'block';
+            document.querySelector(`[onclick="goScreen('${id}')"]`).classList.add('active');
+            document.getElementById('screen-label').textContent = document.querySelector('.nav-item.active').textContent;
+            document.getElementById('ctrl-panel').style.display = id === 'mat' ? 'none' : 'block';
         }
 
-        async function calculateAll() {
-            showLoader(true);
+        async function ignite() {
+            showPulse(true);
             const payload = {
-                dateString: document.getElementById('g-dob').value,
-                timeString: document.getElementById('g-tob').value,
-                lat: document.getElementById('g-lat').value,
-                lng: document.getElementById('g-lng').value,
-                timezone: document.getElementById('g-tz').value,
+                dateString: document.getElementById('d-input').value,
+                timeString: document.getElementById('t-input').value,
+                lat: document.getElementById('v-lat').value,
+                lng: document.getElementById('v-lng').value,
+                timezone: 5.5,
                 ayanamsha: 1
             };
             try {
                 const res = await fetch('/calculate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                 const result = await res.json();
                 if (!result.success) throw new Error(result.error);
-                globalData = result.data;
-                renderAll();
-            } catch (e) { alert(e.message); }
-            showLoader(false);
+                gData = result.data;
+                drawAll();
+            } catch (e) { alert("Cosmic Interference: " + e.message); }
+            showPulse(false);
         }
 
-        function renderAll() {
-            renderPlanets();
-            renderPanchanga();
-            drawChart('chart-d1', 'D1');
-            renderVargas();
-            renderDashas();
-            renderJaiminiKP();
-            renderAnalytics();
+        function drawAll() {
+            renderDash();
+            renderVarGrid();
+            renderDashaList();
+            renderAdvanced();
+            renderYogAnalysis();
         }
 
-        function renderPlanets() {
-            const div = document.getElementById('planet-data');
-            let html = '<table><thead><tr><th>Planet</th><th>Sign</th><th>Nakshatra</th><th>Deg</th></tr></thead><tbody>';
-            Object.entries(globalData.planets).forEach(([name, d]) => {
-                html += `<tr><td>${d.nameTamil}</td><td>${d.signTamil}</td><td>${d.nakshatra.name}</td><td>${(d.longitude % 30).toFixed(2)}°</td></tr>`;
+        function renderDash() {
+            const pBox = document.getElementById('pla-box');
+            let html = '<table><thead><tr><th>Planet</th><th>Sign</th><th>Nakshatra</th><th>Status</th><th>Deg</th></tr></thead><tbody>';
+            Object.entries(gData.planets).forEach(([name, d]) => {
+                const tagClass = `status-${d.dignity.toLowerCase().replace(' ', '-')}`;
+                html += `<tr><td><strong style="color:var(--primary)">${d.nameTamil}</strong> <small style="color:#666">${name}</small></td><td>${d.signTamil}</td><td>${d.nakshatra.name}</td><td><span class="tag-pill ${tagClass}">${d.dignityTamil}</span></td><td>${(d.longitude % 30).toFixed(2)}°</td></tr>`;
             });
-            div.innerHTML = html + '</tbody></table>';
+            pBox.innerHTML = html + '</tbody></table>';
+
+            const pan = gData.panchanga;
+            const panBox = document.getElementById('pan-box');
+            const r = (l, v) => `<div style="display:flex; justify-content:space-between; padding:15px 0; border-bottom:1px solid var(--border);"><span style="color:var(--text-dim)">${l}</span><span style="font-weight:700; color:#fff">${v}</span></div>`;
+            panBox.innerHTML = `${r('Tithi', pan.tithi.name)} ${r('Star', pan.nakshatra.name)} ${r('Yoga', pan.yoga.name)} ${r('Karanam', pan.karana.name)} ${r('Day', pan.vara.name)}`;
+
+            drawWheel('viz-d1', 'D1');
         }
 
-        function renderPanchanga() {
-            const p = globalData.panchanga;
-            const div = document.getElementById('panchanga-data');
-            const row = (l, v) => `<div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #f1f5f9;"><span style="color:var(--text-light)">${l}</span><span style="font-weight:700">${v}</span></div>`;
-            div.innerHTML = `
-            ${row('Tithi', p.tithi.name)}
-            ${row('Nakshatram', p.nakshatra.name)}
-            ${row('Yogam', p.yoga.name)}
-            ${row('Karanam', p.karana.name)}
-            ${row('Vara', p.vara.name)}
-        `;
-        }
-
-        function drawChart(containerId, vargaKey) {
-            const container = document.getElementById(containerId);
-            container.innerHTML = `<div class="cell-center">${vargaKey}</div>`;
-            const data = globalData.vargas[vargaKey];
-
-            SIGN_MAP.forEach(([x, y, sid]) => {
+        function drawWheel(cId, vKey) {
+            const box = document.getElementById(cId);
+            box.innerHTML = `<div class="cell-core">${vKey}</div>`;
+            const data = gData.vargas[vKey];
+            S_MAP.forEach(([x, y, sid]) => {
                 const cell = document.createElement('div');
                 cell.className = 'cell';
                 cell.style.gridColumn = x + 1; cell.style.gridRow = y + 1;
-                cell.setAttribute('data-sign', SIGN_NAMES_SHORT[sid]);
-
+                cell.setAttribute('data-sign', S_NAMES[sid]);
                 Object.entries(data).forEach(([pName, pVal]) => {
                     if (pVal.signIdx === sid) {
-                        const span = document.createElement('span');
-                        span.className = 'p-tag' + (pName === 'Ascendant' ? ' asc' : '');
-                        span.textContent = pName === 'Ascendant' ? 'LA' : (globalData.tamilData.planets[pName]?.substring(0, 2) || pName.substring(0, 2));
-                        cell.appendChild(span);
+                        const el = document.createElement('span');
+                        el.className = 'p-unit' + (pName === 'Ascendant' ? ' asc' : '');
+                        el.textContent = pName === 'Ascendant' ? 'LA' : (gData.tamilData.planets[pName]?.substring(0, 2) || pName.substring(0, 2));
+                        cell.appendChild(el);
                     }
                 });
-                container.appendChild(cell);
+                box.appendChild(cell);
             });
         }
 
-        function renderVargas() {
-            const grid = document.getElementById('varga-grid');
-            grid.innerHTML = '';
-            Object.keys(globalData.vargas).forEach(vk => {
+        function renderVarGrid() {
+            const box = document.getElementById('var-box');
+            box.innerHTML = '';
+            Object.keys(gData.vargas).forEach(vk => {
                 const card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = `<h4 style="margin-bottom:10px; font-size:0.8rem;">${vk}</h4><div class="chart-box" id="chart-${vk}" style="width:100%; height:auto;"></div>`;
-                grid.appendChild(card);
-                drawChart(`chart-${vk}`, vk);
+                card.className = 'glass-card';
+                card.innerHTML = `<h4 style="margin-bottom:15px; color:#fff; font-size:0.8rem;">${vk} Mandala</h4><div class="chart-visual" id="viz-${vk}" style="width:100%; height:auto;"></div>`;
+                box.appendChild(card);
+                drawWheel(`viz-${vk}`, vk);
             });
         }
 
-        function renderDashas() {
-            const div = document.getElementById('dasha-tree');
+        function renderDashaList() {
+            const box = document.getElementById('tim-box');
             let html = '';
-            globalData.dashas.vimshottari.slice(0, 10).forEach(m => {
-                const isNow = new Date(m.end) > new Date();
-                html += `<div style="padding:15px; border-left:4px solid ${isNow ? 'var(--primary)' : '#eee'}; margin-bottom:10px; background:${isNow ? 'var(--primary-light)' : 'transparent'}">
-                <strong>${m.planet} Mahadasha</strong> <span style="font-size:0.8rem; color:#666">until ${new Date(m.end).toLocaleDateString()}</span>
+            gData.dashas.vimshottari.slice(0, 10).forEach(m => {
+                const active = new Date(m.end) > new Date();
+                html += `<div style="padding:20px; border-radius:16px; margin-bottom:12px; border:1px solid ${active ? 'var(--primary)' : 'var(--border)'}; background:${active ? 'rgba(99,102,241,0.1)' : 'transparent'};">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <strong>${m.planet} Mahadasha</strong>
+                    <span style="font-size:0.8rem; color:${active ? 'var(--primary)' : 'var(--text-dim)'}">${new Date(m.end).toLocaleDateString()}</span>
+                </div>
             </div>`;
             });
-            div.innerHTML = html;
+            box.innerHTML = html;
         }
 
-        function renderJaiminiKP() {
-            const j = globalData.jaimini;
-            const jDiv = document.getElementById('jaimini-data');
-            let jHtml = '<table><thead><tr><th>Karaka</th><th>Planet</th></tr></thead><tbody>';
-            j.forEach(item => {
-                jHtml += `<tr><td>${item.karaka}</td><td>${globalData.planets[Object.keys(globalData.planets).find(k => globalData.planets[k].id === item.planetId)]?.nameTamil}</td></tr>`;
+        function renderAdvanced() {
+            const box = document.getElementById('sec-box');
+            let html = '<h4>KP Table</h4><table><thead><tr><th>Planet</th><th>Sign Lord</th><th>Star Lord</th><th>Sub Lord</th></tr></thead><tbody>';
+            Object.entries(gData.planets).forEach(([n, p]) => {
+                html += `<tr><td>${p.nameTamil}</td><td>${p.kp.signLord}</td><td>${p.kp.starLord}</td><td>${p.kp.subLord}</td></tr>`;
             });
-            jDiv.innerHTML = jHtml + '</tbody></table>';
-
-            const kDiv = document.getElementById('kp-data');
-            let kHtml = '<table><thead><tr><th>Planet</th><th>Sign Lord</th><th>Star Lord</th><th>Sub Lord</th><th>Sub-Sub</th></tr></thead><tbody>';
-            Object.entries(globalData.planets).forEach(([pName, p]) => {
-                kHtml += `<tr><td>${p.id === 99 ? 'Ketu' : p.nameTamil}</td><td>${p.kp.signLord}</td><td>${p.kp.starLord}</td><td>${p.kp.subLord}</td><td>${p.kp.subSubLord}</td></tr>`;
-            });
-            kDiv.innerHTML = kHtml + '</tbody></table>';
+            box.innerHTML = html + '</tbody></table>';
         }
 
-        function renderAnalytics() {
-            const sDiv = document.getElementById('shadbala-data');
-            let sHtml = '<table><thead><tr><th>Planet</th><th>Points</th></tr></thead><tbody>';
-            Object.entries(globalData.shadbala).forEach(([n, v]) => {
-                sHtml += `<tr><td>${globalData.planets[n].nameTamil}</td><td>${v.toFixed(2)}</td></tr>`;
+        function renderYogAnalysis() {
+            const box = document.getElementById('ygo-box');
+            let html = '<div class="glass-card"><h4>Yoga Manifestations</h4>';
+            gData.yogas.forEach(y => {
+                html += `<div style="margin-top:15px; padding-top:15px; border-top:1px solid var(--border);"><strong style="color:var(--accent)">${y.name}</strong><p style="font-size:0.8rem; color:var(--text-dim); margin-top:4px;">${y.description}</p></div>`;
             });
-            sDiv.innerHTML = sHtml + '</tbody></table>';
-
-            const yDiv = document.getElementById('yoga-data');
-            let yHtml = '';
-            globalData.yogas.forEach(y => {
-                yHtml += `<div class="card" style="margin-bottom:10px; padding:15px;"><h4 style="color:var(--primary); font-size:0.9rem;">${y.name}</h4><p style="font-size:0.8rem; color:#666">${y.description}</p></div>`;
+            html += '</div><div class="glass-card"><h4>Strength Profile</h4><table>';
+            Object.entries(gData.shadbala).forEach(([n, v]) => {
+                html += `<tr><td>${gData.planets[n].nameTamil}</td><td>${v.toFixed(2)} pts</td></tr>`;
             });
-            yDiv.innerHTML = yHtml || 'No prominent yogas detected';
+            box.innerHTML = html + '</table></div>';
         }
 
-        async function calculatePorutham() {
-            showLoader(true);
-            const payload = {
-                boy: { dateString: document.getElementById('b-dob').value, timeString: document.getElementById('b-tob').value, lat: document.getElementById('b-lat').value, lng: document.getElementById('b-lng').value, timezone: 5.5 },
-                girl: { dateString: document.getElementById('g-dob-match').value, timeString: document.getElementById('g-tob-match').value, lat: document.getElementById('g-lat-match').value, lng: document.getElementById('g-lng-match').value, timezone: 5.5 },
-                ayanamsha: 1
+        async function matSoul() {
+            showPulse(true);
+            const p = {
+                boy: { dateString: document.getElementById('bm-dob').value, timeString: document.getElementById('bm-tob').value, lat: document.getElementById('bm-lat').value, lng: document.getElementById('bm-lng').value, timezone: 5.5 },
+                girl: { dateString: document.getElementById('gm-dob').value, timeString: document.getElementById('gm-tob').value, lat: document.getElementById('gm-lat').value, lng: document.getElementById('gm-lng').value, timezone: 5.5 }
             };
-            const res = await fetch('/api/porutham-birth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            const res = await fetch('/api/porutham-birth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(p) });
             const result = await res.json();
 
-            const box = document.getElementById('match-results-box');
-            box.style.display = 'block';
-            document.getElementById('match-score-text').textContent = `Total Score: ${result.match.totalScore} / ${result.match.maxTotal}`;
+            document.getElementById('mat-res').style.display = 'block';
+            document.getElementById('mat-scr').textContent = `${((result.match.totalScore / result.match.maxTotal) * 100).toFixed(0)}%`;
 
             let html = '';
             result.match.matches.forEach(m => {
-                html += `<div class="card">
-                <div style="display:flex; justify-content:space-between;"><strong>${m.name}</strong> <span>${m.score > 0 ? '✔️' : '❌'}</span></div>
-                <div style="font-size:0.75rem; color:#666; margin-top:5px;">Score: ${m.score}/${m.maxScore}</div>
+                html += `<div class="glass-card">
+                <div style="display:flex; justify-content:space-between;"><strong>${m.name}</strong> <span style="color:${m.score > 0 ? 'var(--primary)' : 'var(--error)'}">${m.score > 0 ? '✓' : '✗'}</span></div>
+                <div style="font-size:0.7rem; color:var(--text-dim); margin-top:5px;">Points: ${m.score}/${m.maxScore}</div>
             </div>`;
             });
-            document.getElementById('match-details-grid').innerHTML = html;
-            showLoader(false);
+            document.getElementById('mat-det').innerHTML = html;
+            showPulse(false);
         }
 
-        // Helper: Suggest Box Utility
-        function setupSuggest(inputId, listId, latId, lngId) {
-            document.getElementById(inputId).addEventListener('input', async (e) => {
+        function linkSuggest(i, l, lt, ln) {
+            document.getElementById(i).addEventListener('input', async (e) => {
                 if (e.target.value.length < 3) return;
-                const res = await fetch(`/api/search-place?q=${e.target.value}`);
-                const data = await res.json();
-                const list = document.getElementById(listId);
-                list.innerHTML = ''; list.style.display = 'block';
-                data.forEach(item => {
-                    const div = document.createElement('div'); div.className = 'suggest-item';
-                    div.textContent = item.display_name;
+                const r = await fetch(`/api/search-place?q=${e.target.value}`);
+                const d = await r.json();
+                const box = document.getElementById(l);
+                box.innerHTML = ''; box.style.display = 'block';
+                d.forEach(v => {
+                    const div = document.createElement('div'); div.className = 'pop-item'; div.textContent = v.display_name;
                     div.onclick = () => {
-                        document.getElementById(latId).value = item.lat;
-                        document.getElementById(lngId).value = item.lon;
-                        document.getElementById(inputId).value = item.display_name;
-                        list.style.display = 'none';
+                        document.getElementById(lt).value = v.lat; document.getElementById(ln).value = v.lon;
+                        document.getElementById(i).value = v.display_name; box.style.display = 'none';
                     };
-                    list.appendChild(div);
+                    box.appendChild(div);
                 });
             });
         }
 
-        setupSuggest('g-place', 'g-suggest', 'g-lat', 'g-lng');
-        setupSuggest('b-place', 'b-suggest', 'b-lat', 'b-lng');
-        setupSuggest('g-place-match', 'g-suggest-match', 'g-lat-match', 'g-lng-match');
+        linkSuggest('p-input', 'p-list', 'v-lat', 'v-lng');
+        linkSuggest('bm-place', 'bm-list', 'bm-lat', 'bm-lng');
+        linkSuggest('gm-place', 'gm-list', 'gm-lat', 'gm-lng');
 
-        function showLoader(s) { document.getElementById('loader').style.display = s ? 'flex' : 'none'; }
+        function showPulse(s) { document.getElementById('loading').style.display = s ? 'flex' : 'none'; }
     </script>
 
 </body>
