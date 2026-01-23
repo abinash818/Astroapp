@@ -15,8 +15,10 @@
             --p-3: #00ffcc;
             --accent: #ffcc00;
             --bg: #05070a;
-            --glass: rgba(20, 25, 40, 0.9);
-            --border: rgba(255, 255, 255, 0.15);
+            --glass: rgba(20, 25, 40, 0.95);
+            --border: rgba(255, 255, 255, 0.1);
+            --hdr: #0a8f5f;
+            /* Green header from screenshot */
         }
 
         * {
@@ -28,7 +30,7 @@
 
         body {
             background: var(--bg);
-            color: #fff;
+            color: #e0e0e0;
             min-height: 100vh;
             overflow-x: hidden;
         }
@@ -39,9 +41,10 @@
             padding: 20px;
         }
 
+        /* Premium Header */
         header {
             text-align: center;
-            padding: 30px 0;
+            padding: 40px 0;
         }
 
         header h1 {
@@ -50,229 +53,246 @@
             background: linear-gradient(to right, var(--p-1), var(--p-3), var(--p-2));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 10px rgba(0, 255, 204, 0.3));
         }
 
-        /* Form */
+        /* Modern Form */
         .glass-panel {
             background: var(--glass);
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(30px);
             border: 1px solid var(--border);
-            border-radius: 25px;
-            padding: 30px;
-            margin-bottom: 30px;
+            border-radius: 30px;
+            padding: 35px;
+            margin-bottom: 40px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .form-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
         }
 
         .input-group {
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 8px;
+            position: relative;
         }
 
         label {
             font-size: 0.75rem;
-            color: #aaa;
+            color: #888;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
+            font-weight: 600;
         }
 
         input,
         select {
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 12px;
+            padding: 14px;
             color: #fff;
+            font-size: 0.95rem;
+            transition: all 0.3s;
         }
 
-        button.btn-main {
+        input:focus,
+        select:focus {
+            border-color: var(--p-3);
+            background: rgba(255, 255, 255, 0.06);
+            outline: none;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
+        }
+
+        .btn-ignite {
             grid-column: 1 / -1;
-            background: linear-gradient(to right, var(--p-1), var(--p-2));
-            color: white;
+            background: linear-gradient(135deg, var(--p-1), var(--p-2));
             border: none;
-            padding: 15px;
+            padding: 18px;
             border-radius: 15px;
-            font-weight: 800;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        /* Tabs */
-        .tabs {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        .tab-btn {
-            background: #111;
-            border: 1px solid var(--border);
-            padding: 10px 25px;
-            border-radius: 30px;
             color: #fff;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 3px;
             cursor: pointer;
+            margin-top: 10px;
+            transition: transform 0.2s;
         }
 
-        .tab-btn.active {
-            background: var(--p-1);
-            border-color: var(--p-1);
-            box-shadow: 0 0 15px rgba(255, 0, 204, 0.3);
+        .btn-ignite:hover {
+            transform: scale(1.01);
+            box-shadow: 0 0 30px rgba(255, 0, 204, 0.4);
         }
 
-        .tab-content {
-            display: none;
+        /* Report Modal Theme */
+        .report-header {
+            background: var(--hdr);
+            padding: 15px 25px;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
+            color: #fff;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.1);
         }
 
-        .tab-content.active {
-            display: block;
+        .report-body {
+            background: #fff;
+            color: #333;
+            border-radius: 0 0 15px 15px;
+            padding: 25px;
         }
 
-        /* Chart */
-        .chart-section {
+        /* Professional Planet Table */
+        .p-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .p-table th {
+            background: var(--hdr);
+            color: #fff;
+            padding: 12px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            text-align: left;
+            text-transform: uppercase;
+        }
+
+        .p-table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #444;
+        }
+
+        .p-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .status-tag {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+
+        .status-exalted {
+            background: #e6ffed;
+            color: #22863a;
+        }
+
+        .status-debilitated {
+            background: #ffeef0;
+            color: #d73a49;
+        }
+
+        .status-neutral {
+            background: #f6f8fa;
+            color: #586069;
+        }
+
+        .status-friend {
+            background: #f1f8ff;
+            color: #0366d6;
+        }
+
+        .status-enemy {
+            background: #fff5eb;
+            color: #e36209;
+        }
+
+        .status-own {
+            background: #fff8c5;
+            color: #735c0f;
+        }
+
+        /* Professional Chart */
+        .chart-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 15px;
+            border: 1px solid #ddd;
         }
 
         .si-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             grid-template-rows: repeat(4, 1fr);
-            width: 550px;
-            height: 550px;
-            background: var(--p-3);
-            border: 2px solid var(--p-3);
-            border-radius: 15px;
-            overflow: hidden;
+            width: 480px;
+            height: 480px;
+            border: 2px solid #555;
+            background: #fff;
         }
 
         .si-cell {
-            background: #000;
-            border: 0.5px solid rgba(0, 255, 204, 0.1);
-            padding: 8px;
+            border: 0.5px solid #ccc;
             position: relative;
+            padding: 8px;
             display: flex;
-            flex-direction: column;
+            flex-wrap: wrap;
+            align-content: flex-start;
             gap: 4px;
         }
 
         .si-cell::after {
             content: attr(data-sign);
             position: absolute;
-            bottom: 4px;
-            right: 6px;
-            font-size: 0.65rem;
-            color: #444;
+            bottom: 2px;
+            right: 4px;
+            font-size: 0.6rem;
+            color: #bbb;
+            pointer-events: none;
         }
 
-        .p-tag {
-            background: linear-gradient(45deg, var(--p-1), var(--p-2));
-            border-radius: 4px;
-            padding: 2px 6px;
+        .planet-icon {
             font-size: 0.75rem;
             font-weight: 800;
-            white-space: nowrap;
+            padding: 2px 5px;
+            border-radius: 4px;
+            color: #333;
         }
 
-        .p-tag.asc {
-            background: var(--accent);
-            color: #000;
+        .planet-icon.asc {
+            border: 1.5px solid #d73a49;
+            color: #d73a49;
         }
 
         .si-center {
-            grid-column: 2 / 4;
-            grid-row: 2 / 4;
-            background: #05070a;
+            grid-column: 2/4;
+            grid-row: 2/4;
             display: flex;
             justify-content: center;
             align-items: center;
-            flex-direction: column;
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: #d73a49;
+            border: 1px solid #ccc;
         }
 
-        /* Data Display */
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 20px;
+        /* Dasha System */
+        .dasha-box {
+            margin-top: 30px;
         }
 
-        .neon-card {
-            background: var(--glass);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 25px;
-        }
-
-        .neon-card h3 {
-            color: var(--p-3);
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            margin-bottom: 15px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 8px;
-        }
-
-        .data-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            font-size: 0.9rem;
-        }
-
-        .lbl {
-            color: #888;
-        }
-
-        .val {
-            font-weight: 700;
-        }
-
-        /* Table */
-        .kp-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        .kp-table th,
-        .kp-table td {
-            border: 1px solid var(--border);
-            padding: 8px;
-            text-align: center;
-            font-size: 0.8rem;
-        }
-
-        .kp-table th {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--p-3);
-            text-transform: uppercase;
-        }
-
-        /* Porutham */
-        .match-form {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-
-        .match-results {
-            border-top: 1px solid var(--p-1);
-            padding-top: 20px;
-        }
-
-        .match-score {
-            font-size: 2rem;
-            color: var(--accent);
-            text-align: center;
-            margin-bottom: 20px;
+        .dasha-active {
+            border: 2px solid var(--p-3);
+            padding: 15px;
+            border-radius: 15px;
+            background: rgba(0, 255, 204, 0.05);
         }
 
         .loader {
@@ -289,7 +309,7 @@
             width: 60px;
             height: 60px;
             border: 5px solid #333;
-            border-top: 5px solid var(--p-1);
+            border-top: 5px solid var(--p-3);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -298,6 +318,60 @@
             100% {
                 transform: rotate(360deg);
             }
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 8px 20px;
+            border-radius: 20px;
+            background: #eee;
+            color: #555;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        .tab.active {
+            background: var(--hdr);
+            color: #fff;
+        }
+
+        /* Suggestions */
+        .suggestions {
+            position: absolute;
+            top: 100%;
+            background: #1a1a1a;
+            border: 1px solid var(--border);
+            width: 100%;
+            z-index: 100;
+            border-radius: 12px;
+            margin-top: 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .suggest-item {
+            padding: 12px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
+        }
+
+        .suggest-item:hover {
+            background: #222;
+            color: var(--p-3);
+        }
+
+        /* Detail Area */
+        #results {
+            display: none;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -311,121 +385,81 @@
     <div class="container">
         <header>
             <h1>AstroGlow Pro</h1>
-            <p>Professional Vedic & KP Engine</p>
+            <p>Professional Vedic Astrology Engine</p>
         </header>
 
-        <div class="glass-panel" id="main-form">
-            <div class="input-group" style="grid-column: 1/-1;">
-                <label>Place Search</label>
-                <input type="text" id="place-search" placeholder="Type city (e.g. Madurai)...">
-                <div id="suggestions"
-                    style="position:absolute; background:#111; width:100%; z-index:10; border:1px solid var(--border); display:none; top:300px;">
+        <div class="glass-panel">
+            <div class="form-grid">
+                <div class="input-group" style="grid-column: 1 / -1; position: relative;">
+                    <label>Place of Birth</label>
+                    <input type="text" id="place-search" placeholder="Enter city name (e.g. Madurai, Chennai)...">
+                    <div class="suggestions" id="suggestions"></div>
                 </div>
-            </div>
-            <div class="input-group"><label>Date</label><input type="date" id="dob" value="1990-01-01"></div>
-            <div class="input-group"><label>Time</label><input type="time" id="tob" step="1" value="12:00:00"></div>
-            <div class="input-group"><label>Lat</label><input type="number" id="lat" value="28.6139" step="any"></div>
-            <div class="input-group"><label>Lng</label><input type="number" id="lng" value="77.2090" step="any"></div>
-            <div class="input-group"><label>TZ</label><input type="number" id="timezone" value="5.5" step="0.5"></div>
-            <div class="input-group">
-                <label>Ayanamsha</label>
-                <select id="ayanamsha">
-                    <option value="1">Lahiri</option>
-                    <option value="3">Raman</option>
-                    <option value="5">KP</option>
-                </select>
-            </div>
-            <button class="btn-main" onclick="calculate()">Calculate Report</button>
-        </div>
-
-        <div class="tabs">
-            <button class="tab-btn active" onclick="showTab('t-report')">Report & Charts</button>
-            <button class="tab-btn" onclick="showTab('t-kp')">KP Significators</button>
-            <button class="tab-btn" onclick="showTab('t-match')">Horoscope Matching</button>
-        </div>
-
-        <div id="t-report" class="tab-content active">
-            <div class="chart-section" style="margin-bottom: 40px;">
-                <select id="varga-select" onchange="drawChart()"
-                    style="margin-bottom:15px; padding:8px 15px; background:var(--p-1); border:none; border-radius:10px; color:#fff;">
-                    <option value="D1">Rasi (D1)</option>
-                    <option value="D9" selected>Amsam (D9)</option>
-                    <option value="D10">Career (D10)</option>
-                </select>
-                <div class="si-grid" id="si-grid"></div>
-            </div>
-            <div class="card-grid">
-                <div class="neon-card">
-                    <h3>Panchangam</h3>
-                    <div id="p-data"></div>
+                <div class="input-group">
+                    <label>Full Name</label>
+                    <input type="text" id="user-name" placeholder="Enter your name">
                 </div>
-                <div class="neon-card">
-                    <h3>Planetary Positions</h3>
-                    <div id="planet-data"></div>
+                <div class="input-group">
+                    <label>Gender</label>
+                    <select id="gender">
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select>
                 </div>
+                <div class="input-group"><label>Birth Date</label><input type="date" id="dob" value="1993-10-29"></div>
+                <div class="input-group"><label>Birth Time</label><input type="time" id="tob" step="1" value="06:45:00">
+                </div>
+                <div class="input-group"><label>Timezone</label><input type="number" id="timezone" value="5.5"
+                        step="0.5"></div>
+                <input type="hidden" id="lat" value="9.9252">
+                <input type="hidden" id="lng" value="78.1198">
+                <button class="btn-ignite" onclick="calculate()">Generate Professional Chart</button>
             </div>
         </div>
 
-        <div id="t-kp" class="tab-content">
-            <div class="neon-card" style="margin-bottom: 20px;">
-                <h3>KP Planet Significators</h3>
-                <table class="kp-table">
-                    <thead id="kp-planets-head"></thead>
-                    <tbody id="kp-planets-body"></tbody>
+        <div id="results">
+            <div class="report-header" id="r-header">
+                <span id="header-text">Match Chart - 1993-10-29 | Madurai, India</span>
+                <span style="cursor:pointer" onclick="document.getElementById('results').style.display='none'">✖</span>
+            </div>
+            <div class="report-body">
+                <table class="p-table">
+                    <thead>
+                        <tr>
+                            <th>இராகம்</th>
+                            <th>ராசி</th>
+                            <th>நட்சத்திரம்</th>
+                            <th>நட்சத்திர நாதன்</th>
+                            <th>பாதம்</th>
+                            <th>நிலை</th>
+                            <th>டிகிரி</th>
+                        </tr>
+                    </thead>
+                    <tbody id="p-table-body"></tbody>
                 </table>
-            </div>
-            <div class="neon-card">
-                <h3>KP House (Cusp) Significators</h3>
-                <table class="kp-table">
-                    <thead id="kp-houses-head"></thead>
-                    <tbody id="kp-houses-body"></tbody>
-                </table>
-            </div>
-        </div>
 
-        <div id="t-match" class="tab-content">
-            <div class="neon-card">
-                <h3>Porutham Matching (South Indian)</h3>
-                <div class="match-form">
-                    <div>
-                        <h4 style="color:var(--p-1); margin-bottom:10px;">Boy's Info</h4>
-                        <div class="input-group"><label>Nakshatra</label><select id="boy-nak"></select></div>
-                        <div class="input-group" style="margin-top:10px;"><label>Rasi</label><select
-                                id="boy-rasi"></select></div>
+                <div class="chart-container">
+                    <div class="tabs">
+                        <div class="tab active" onclick="switchVarga(event, 'D1')">இராசி கட்டம்</div>
+                        <div class="tab" onclick="switchVarga(event, 'D9')">அம்ச கட்டம்</div>
+                        <div class="tab" onclick="switchVarga(event, 'D10')">பவ கட்டம் (D10)</div>
                     </div>
-                    <div>
-                        <h4 style="color:var(--p-3); margin-bottom:10px;">Girl's Info</h4>
-                        <div class="input-group"><label>Nakshatra</label><select id="girl-nak"></select></div>
-                        <div class="input-group" style="margin-top:10px;"><label>Rasi</label><select
-                                id="girl-rasi"></select></div>
-                    </div>
+                    <div style="font-size:0.7rem; color:#888; font-weight:800; margin-bottom:10px;">இராசி கட்டம்
+                        (Dignity Colors)</div>
+                    <div class="si-grid" id="si-grid"></div>
                 </div>
-                <button class="btn-main" onclick="runMatching()">Check Match</button>
-                <div id="match-results" class="match-results" style="display:none;">
-                    <div class="match-score" id="match-score-display"></div>
-                    <div class="card-grid" id="match-details"></div>
-                </div>
+
+                <div class="dasha-box" id="dasha-active-area"></div>
+                <div id="full-dasha" style="margin-top:20px; color:#555"></div>
             </div>
         </div>
     </div>
 
     <script>
         let globalData = null;
+        let currentVarga = 'D1';
         const SIGN_MAP = [[0, 0, 11], [1, 0, 0], [2, 0, 1], [3, 0, 2], [3, 1, 3], [3, 2, 4], [3, 3, 5], [2, 3, 6], [1, 3, 7], [0, 3, 8], [0, 2, 9], [0, 1, 10]];
-        const SIGN_NAMES = ["Ar", "Ta", "Ge", "Cn", "Le", "Vi", "Li", "Sc", "Sg", "Cp", "Aq", "Pi"];
-        const NAKSHATRAS = ["Ashwini", "Bharani", "Krittika", "Rohini", "Mrigashira", "Ardra", "Punarvasu", "Pushya", "Ashlesha", "Magha", "P.Phalguni", "U.Phalguni", "Hasta", "Chitra", "Swati", "Vishakha", "Anuradha", "Jyeshtha", "Mula", "P.Ashada", "U.Ashada", "Shravana", "Dhanishta", "Shatabhisha", "P.Bhadra", "U.Bhadra", "Revati"];
-
-        const nakSelects = [document.getElementById('boy-nak'), document.getElementById('girl-nak')];
-        const rasiSelects = [document.getElementById('boy-rasi'), document.getElementById('girl-rasi')];
-        nakSelects.forEach(sel => NAKSHATRAS.forEach((n, i) => sel.innerHTML += `<option value="${i}">${n}</option>`));
-        rasiSelects.forEach(sel => SIGN_NAMES.forEach((s, i) => sel.innerHTML += `<option value="${i}">${s}</option>`));
-
-        function showTab(id) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            document.querySelector(`[onclick="showTab('${id}')"]`).classList.add('active');
-            document.getElementById(id).classList.add('active');
-        }
+        const SIGN_NAMES_EN = ["Ar", "Ta", "Ge", "Cn", "Le", "Vi", "Li", "Sc", "Sg", "Cp", "Aq", "Pi"];
 
         async function calculate() {
             document.getElementById('loader').style.display = 'flex';
@@ -435,118 +469,137 @@
                 lat: document.getElementById('lat').value,
                 lng: document.getElementById('lng').value,
                 timezone: document.getElementById('timezone').value,
-                ayanamsha: document.getElementById('ayanamsha').value
+                ayanamsha: 1
             };
             try {
                 const res = await fetch('/calculate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                 const result = await res.json();
                 globalData = result.data;
+
+                document.getElementById('header-text').textContent = `Professional Chart - ${payload.dateString} ${payload.timeString} | ${document.getElementById('place-search').value}`;
                 renderAll();
+                document.getElementById('results').style.display = 'block';
+                window.scrollTo({ top: document.getElementById('results').offsetTop - 50, behavior: 'smooth' });
             } catch (e) { alert("Error: " + e.message); }
             document.getElementById('loader').style.display = 'none';
-            showTab('t-report');
         }
 
         function renderAll() {
+            renderPlanetTable();
             drawChart();
-            renderPanchanga();
-            renderKP();
-            let html = '';
-            Object.entries(globalData.planets).forEach(([p, d]) => {
-                html += `<div class="data-row"><span>${p}</span><span>${d.longitude.toFixed(2)}° ${d.sign}</span></div>`;
-            });
-            document.getElementById('planet-data').innerHTML = html;
+            renderActiveDasha();
         }
 
-        function row(l, v) { return `<div class="data-row"><span class="lbl">${l}</span><span class="val">${v}</span></div>`; }
+        function renderPlanetTable() {
+            const body = document.getElementById('p-table-body');
+            body.innerHTML = '';
+            Object.entries(globalData.planets).forEach(([name, d]) => {
+                const tr = document.createElement('tr');
+                const deg = Math.floor(d.longitude % 30);
+                const min = Math.floor(((d.longitude % 30) - deg) * 60);
 
-        function renderPanchanga() {
-            const p = globalData.panchanga;
-            document.getElementById('p-data').innerHTML = `
-            ${row('Tithi', p.tithi.name)}
-            ${row('Nakshatra', p.nakshatra.name)}
-            ${row('Yoga', p.yoga.name)}
-            ${row('Karana', p.karana.name)}
-            ${row('Vara', p.vara.name)}
-        `;
+                const statusClass = `status-${d.dignity.toLowerCase().replace(' ', '-')}`;
+
+                tr.innerHTML = `
+                <td><strong>${d.nameTamil}</strong> <br><small style="color:#888">${name}</small></td>
+                <td>${d.signTamil} <br><small style="color:#888">(${d.sign})</small></td>
+                <td>${d.nakshatra.name}</td>
+                <td>${d.nakshatra.lord}</td>
+                <td>${d.nakshatra.pada}</td>
+                <td><span class="status-tag ${statusClass}">${d.dignityTamil || d.dignity}</span></td>
+                <td>${deg}° ${min}'</td>
+            `;
+                body.appendChild(tr);
+            });
         }
 
         function drawChart() {
-            const v = document.getElementById('varga-select').value;
-            const vData = globalData.vargas[v];
+            const chartData = globalData.vargas[currentVarga];
             const container = document.getElementById('si-grid');
-            container.innerHTML = `<div class="si-center"><h2 style="color:var(--p-3)">${v}</h2></div>`;
+            container.innerHTML = `<div class="si-center"><span>${currentVarga === 'D1' ? 'RASI' : (currentVarga === 'D9' ? 'D9' : 'D10')}</span></div>`;
+
             SIGN_MAP.forEach(([x, y, sid]) => {
-                const cell = document.createElement('div'); cell.className = 'si-cell';
-                cell.style.gridColumn = x + 1; cell.style.gridRow = y + 1; cell.setAttribute('data-sign', SIGN_NAMES[sid]);
-                Object.entries(vData).forEach(([p, d]) => {
-                    if (SIGN_NAMES.indexOf(d.sign.substring(0, 2)) === sid) {
-                        const tag = document.createElement('span'); tag.className = 'p-tag' + (p === 'Ascendant' ? ' asc' : '');
-                        tag.textContent = p === 'Ascendant' ? 'LA' : p.substring(0, 2).toUpperCase();
-                        cell.appendChild(tag);
+                const cell = document.createElement('div');
+                cell.className = 'si-cell';
+                cell.style.gridColumn = x + 1; cell.style.gridRow = y + 1;
+                cell.setAttribute('data-sign', SIGN_NAMES_EN[sid]);
+
+                // Fix: Add planets by sign logic
+                Object.entries(chartData).forEach(([pName, pVal]) => {
+                    const pSignIdx = SIGN_NAMES_EN.indexOf(pVal.sign.substring(0, 2));
+                    if (pSignIdx === sid) {
+                        const span = document.createElement('span');
+                        span.className = 'planet-icon' + (pName === 'Ascendant' ? ' asc' : '');
+                        span.textContent = pName === 'Ascendant' ? 'ல' : globalData.tamilData.planets[pName].substring(0, 2);
+                        cell.appendChild(span);
                     }
                 });
                 container.appendChild(cell);
             });
         }
 
-        function renderKP() {
-            const pHead = document.getElementById('kp-planets-head');
-            const pBody = document.getElementById('kp-planets-body');
-            pHead.innerHTML = `<tr><th>Planet</th><th>Sign Lord</th><th>Star Lord</th><th>Sub Lord</th><th>SS Lord</th></tr>`;
-            pBody.innerHTML = '';
-            Object.entries(globalData.planets).forEach(([p, d]) => {
-                pBody.innerHTML += `<tr><td>${p}</td><td>${d.kp.signLord}</td><td>${d.kp.starLord}</td><td>${d.kp.subLord}</td><td>${d.kp.subSubLord}</td></tr>`;
-            });
-            const hHead = document.getElementById('kp-houses-head');
-            const hBody = document.getElementById('kp-houses-body');
-            hHead.innerHTML = `<tr><th>Cusp</th><th>Sign</th><th>Sign Lord</th><th>Star Lord</th><th>Sub Lord</th></tr>`;
-            hBody.innerHTML = '';
-            globalData.houses.forEach(h => {
-                hBody.innerHTML += `<tr><td>${h.id}</td><td>${h.sign}</td><td>${h.kp.signLord}</td><td>${h.kp.starLord}</td><td>${h.kp.subLord}</td></tr>`;
-            });
+        function switchVarga(e, v) {
+            currentVarga = v;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            e.target.classList.add('active');
+            drawChart();
         }
 
-        async function runMatching() {
-            const payload = {
-                boyNak: document.getElementById('boy-nak').value,
-                girlNak: document.getElementById('girl-nak').value,
-                boySign: document.getElementById('boy-rasi').value,
-                girlSign: document.getElementById('girl-rasi').value
-            };
-            const res = await fetch('/api/porutham', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-            const { match } = await res.json();
-            const resultsDiv = document.getElementById('match-results');
-            resultsDiv.style.display = 'block';
-            document.getElementById('match-score-display').textContent = `Total Score: ${match.totalScore} / ${match.maxTotal}`;
-            let detailsHtml = '';
-            match.matches.forEach(m => {
-                const status = m.score > 0 ? '✔️' : '❌';
-                detailsHtml += `<div class="neon-card"><h3>${m.name} ${status}</h3><div class="data-row">Score: ${m.score}/${m.maxScore}</div><p style="font-size:0.8rem; color:#aaa">${m.description}</p></div>`;
-            });
-            document.getElementById('match-details').innerHTML = detailsHtml;
-            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+        function renderActiveDasha() {
+            // Simple Dasha Highlight for Demo
+            const now = new Date();
+            const activeArea = document.getElementById('dasha-active-area');
+            activeArea.innerHTML = '<h3>Current Active Dasha</h3>';
+
+            // Finding active dasha from tree
+            const tree = globalData.dashas;
+            for (const m of tree) {
+                const end = new Date(m.endDate);
+                if (end > now) {
+                    let html = `<div class="dasha-active">
+                    <div style="font-weight:800; color:var(--p-1); margin-bottom:10px;">Current Mahadasha: ${m.lord}</div>
+                    <div style="font-size:0.9rem">Ends on: ${end.toLocaleDateString()}</div>`;
+
+                    for (const a of m.antardashas) {
+                        const aEnd = new Date(a.endDate);
+                        if (aEnd > now) {
+                            html += `<div style="font-weight:700; color:var(--p-2); margin-top:10px;">Antardasha (Bhukti): ${a.lord}</div>
+                                 <div style="font-size:0.8rem">Ends on: ${aEnd.toLocaleDateString()}</div>`;
+                            break;
+                        }
+                    }
+                    html += `</div>`;
+                    activeArea.innerHTML += html;
+                    break;
+                }
+            }
         }
 
-        document.getElementById('place-search').addEventListener('input', async (e) => {
+        // Geocoding Proxy logic
+        const searchInput = document.getElementById('place-search');
+        const suggestList = document.getElementById('suggestions');
+
+        searchInput.addEventListener('input', async (e) => {
             if (e.target.value.length < 3) return;
             const res = await fetch(`/api/search-place?q=${e.target.value}`);
             const data = await res.json();
-            const suggestions = document.getElementById('suggestions');
-            suggestions.innerHTML = ''; suggestions.style.display = 'block';
+            suggestList.innerHTML = '';
+            suggestList.style.display = 'block';
             data.forEach(item => {
-                const div = document.createElement('div'); div.style.padding = '10px'; div.style.cursor = 'pointer'; div.style.borderBottom = '1px solid #222';
+                const div = document.createElement('div');
+                div.className = 'suggest-item';
                 div.textContent = item.display_name;
                 div.onclick = () => {
                     document.getElementById('lat').value = item.lat;
                     document.getElementById('lng').value = item.lon;
-                    document.getElementById('place-search').value = item.display_name;
-                    suggestions.style.display = 'none';
+                    searchInput.value = item.display_name;
+                    suggestList.style.display = 'none';
                 };
-                suggestions.appendChild(div);
+                suggestList.appendChild(div);
             });
         });
     </script>
+
 </body>
 
 </html>
